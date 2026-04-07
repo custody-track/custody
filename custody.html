@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إدارة العهدة المالية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial;
+      direction: rtl;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+
+    h2, h3, h4 { text-align: center; }
+
+    input, button, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0;
+      font-size: 16px;
+    }
+
+    input{
+      max-width: 90%;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-del {
+      background: #dc3545;
+      font-size: 13px;
+      padding: 6px;
+    }
+
+    textarea { min-height: 60px; max-width: 90%; }
+
+    .box {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,.1);
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    th { background: #f2f2f2; }
+    .green { color: green; font-weight: bold; }
+    .red { color: red; font-weight: bold; }
+
+    .balance-box {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e9f5ff;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- شاشة البداية -->
+<div id="startBox" class="box">
+  <h2>مرحبًا</h2>
+  <button onclick="showLogin()">دخول</button>
+  <button onclick="showAdd()" style="background:#fff;color:#000">تسجيل مستخدم جديد</button>
+</div>
+
+<!-- إضافة مستخدم -->
+<div id="addBox" class="box" style="display:none;">
+  <h2>إضافة مستخدم جديد</h2>
+  <input id="add_name" placeholder="الاسم">
+  <input id="add_username" placeholder="اسم المستخدم">
+  <input id="add_password" type="password" placeholder="كلمة المرور">
+  <button onclick="addEmployee()">حفظ المستخدم</button>
+  <p id="add_msg"></p>
+</div>
+
+<!-- تسجيل دخول -->
+<div id="loginBox" class="box" style="display:none;">
+  <h2>تسجيل دخول</h2>
+  <input id="login_username" placeholder="اسم المستخدم">
+  <input id="login_password" type="password" placeholder="كلمة المرور">
+  <button onclick="login()">دخول</button>
+</div>
+
+<!-- لوحة العهدة -->
+<div id="panel" class="box" style="display:none;">
+  <h3 id="empName"></h3>
+
+  <h4>تسجيل عملية</h4>
+
+  <select id="type">
+    <option value="add">إضافة عهدة</option>
+    <option value="expense">مصروف</option>
+  </select>
+
+  <input id="amount" type="number" placeholder="المبلغ">
+  <input id="date" type="date">
+  <textarea id="note" placeholder="ملاحظة"></textarea>
+
+  <button onclick="saveTransaction()">حفظ العملية</button>
+
+  <h4>سجل العمليات</h4>
+
+  <table>
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>النوع</th>
+        <th>المبلغ</th>
+        <th>ملاحظة</th>
+        <th>حذف</th>
+      </tr>
+    </thead>
+    <tbody id="transactions"></tbody>
+  </table>
+
+  <div class="balance-box">
+    الرصيد الحالي: <span id="balance">0</span> جنيه
+  </div>
+</div>
+
+<script>
+  const DB = "https://fady-odas-default-rtdb.firebaseio.com/employees";
+  let currentEmpId = null;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    date.value = new Date().toISOString().split("T")[0];
+  });
+
+  function showAdd() {
+    startBox.style.display = "none";
+    addBox.style.display = "block";
+  }
+
+  function showLogin() {
+    startBox.style.display = "none";
+    loginBox.style.display = "block";
+  }
+
+  function addEmployee() {
+    if (!add_name.value || !add_username.value || !add_password.value) return;
+
+    fetch(DB + ".json")
+      .then(r => r.json())
+      .then(data => {
+        for (let id in data) {
+          if (data[id].username === add_username.value) {
+            add_msg.textContent = "اسم المستخدم مستخدم";
+            return;
+          }
+        }
+
+        fetch(DB + ".json", {
+          method: "POST",
+          body: JSON.stringify({
+            name: add_name.value,
+            username: add_username.value,
+            password: add_password.value,
+            transactions: {}
+          })
+        }).then(() => {
+          add_msg.textContent = "تمت الإضافة بنجاح";
+          setTimeout(() => {
+            addBox.style.display = "none";
+            startBox.style.display = "block";
+          }, 1500);
+        });
+      });
+  }
+
+  function login() {
+    fetch(DB + ".json")
+      .then(r => r.json())
+      .then(data => {
+        for (let id in data) {
+          if (
+            data[id].username === login_username.value &&
+            data[id].password === login_password.value
+          ) {
+            currentEmpId = id;
+            empName.textContent = "المستخدم: " + data[id].name;
+            panel.style.display = "block";
+            loginBox.style.display = "none";
+            startBox.style.display = "none";
+            loadTransactions();
+            return;
+          }
+        }
+        alert("بيانات الدخول غير صحيحة");
+      });
+  }
+function loadTransactions() {
+  fetch(`${DB}/${currentEmpId}/transactions.json`)
+    .then(r => r.json())
+    .then(data => {
+      let html = "";
+      let total = 0;
+
+      if (data) {
+        // تحويل object إلى array + ترتيب بالتاريخ (الأقدم → الأحدث)
+        const sorted = Object.entries(data).sort((a, b) => {
+          return new Date(a[1].date) - new Date(b[1].date);
+        });
+
+        sorted.forEach(([id, t]) => {
+          total += t.type === "add" ? Number(t.amount) : -Number(t.amount);
+
+          html += `
+            <tr>
+              <td>${t.date}</td>
+              <td class="${t.type === 'add' ? 'green' : 'red'}">
+                ${t.type === 'add' ? 'إضافة' : 'مصروف'}
+              </td>
+              <td>${t.amount}</td>
+              <td>${t.note || ''}</td>
+              <td>
+                <button class="btn-del" onclick="deleteTransaction('${id}')">🗑️</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      document.getElementById("transactions").innerHTML = html;
+      document.getElementById("balance").innerText = total;
+    });
+}
+
+
+  function saveTransaction() {
+    if (!amount.value || !date.value) return;
+
+    fetch(`${DB}/${currentEmpId}/transactions.json`, {
+      method: "POST",
+      body: JSON.stringify({
+        type: type.value,
+        amount: amount.value,
+        date: date.value,
+        note: note.value
+      })
+    }).then(() => {
+      amount.value = note.value = "";
+      loadTransactions();
+    });
+  }
+
+  function deleteTransaction(id) {
+    if (!confirm("هل أنت متأكد من حذف العملية؟")) return;
+
+    fetch(`${DB}/${currentEmpId}/transactions/${id}.json`, {
+      method: "DELETE"
+    }).then(loadTransactions);
+  }
+</script>
+
+</body>
+</html>
