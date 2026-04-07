@@ -79,6 +79,7 @@
 </head>
 <body>
 
+
 <!-- شاشة البداية -->
 <div id="startBox" class="box">
   <h2>مرحبًا</h2>
@@ -106,6 +107,10 @@
 
 <!-- لوحة العهدة -->
 <div id="panel" class="box" style="display:none;">
+
+    <H4>"اَلأَمِينُ فِي الْقَلِيلِ أَمِينٌ أَيْضًا فِي الْكَثِيرِ، وَالظَّالِمُ فِي الْقَلِيلِ ظَالِمٌ أَيْضًا فِي الْكَثِيرِ."<br> (لو 16: 10).</H4>
+
+
   <h3 id="empName"></h3>
 
   <h4>تسجيل عملية</h4>
@@ -121,9 +126,19 @@
 
   <button onclick="saveTransaction()">حفظ العملية</button>
 
-  <h4>سجل العمليات</h4>
+<div class="balance-box">
+    الرصيد الحالي: <span id="balance">0</span> جنيه
+  </div>
 
-  <table>
+
+  <BUtton id="SHOWHIS" style="display: none; background-color: rgb(4, 149, 149);" >
+ عرض سجل
+</BUtton>
+
+
+
+
+  <table id="hisTable" style="display:none;">
     <thead>
       <tr>
         <th>التاريخ</th>
@@ -136,10 +151,9 @@
     <tbody id="transactions"></tbody>
   </table>
 
-  <div class="balance-box">
-    الرصيد الحالي: <span id="balance">0</span> جنيه
-  </div>
+  
 </div>
+
 
 <script>
   const DB = "https://fady-odas-default-rtdb.firebaseio.com/employees";
@@ -152,11 +166,13 @@
   function showAdd() {
     startBox.style.display = "none";
     addBox.style.display = "block";
+    
   }
 
   function showLogin() {
     startBox.style.display = "none";
     loginBox.style.display = "block";
+    
   }
 
   function addEmployee() {
@@ -185,6 +201,7 @@
           setTimeout(() => {
             addBox.style.display = "none";
             startBox.style.display = "block";
+            SHOWHIS.style.display = "block";
           }, 1500);
         });
       });
@@ -200,10 +217,11 @@
             data[id].password === login_password.value
           ) {
             currentEmpId = id;
-            empName.textContent = "المستخدم: " + data[id].name;
+            empName.textContent = "المستخدم : " + data[id].name;
             panel.style.display = "block";
             loginBox.style.display = "none";
             startBox.style.display = "none";
+            SHOWHIS.style.display = "block";
             loadTransactions();
             return;
           }
@@ -273,6 +291,22 @@ function loadTransactions() {
       method: "DELETE"
     }).then(loadTransactions);
   }
+
+
+
+  SHOWHIS.addEventListener("click", function () {
+  const table = document.getElementById("hisTable");
+
+  if (table.style.display === "none") {
+    table.style.display = "table";
+    SHOWHIS.textContent = "إخفاء السجل";
+  } else {
+    table.style.display = "none";
+    SHOWHIS.textContent = "سجل العمليات";
+  }
+});
+
+
 </script>
 
 </body>
