@@ -75,6 +75,80 @@
       font-weight: bold;
       border-radius: 6px;
     }
+
+
+    .note-row td {
+  background: #f2f2f2;   /* نفس لون الهيدر أو قريب منه */
+  font-size: 13px;
+  text-align: right;
+  border-top: none;      /* يشيل الخط اللي بيفصلهم */
+}
+
+.note-label {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.note-row td {
+  background: #fff;
+  border-top: none;
+  color: #555;
+  font-style: italic;
+}
+
+.details-row td {
+  background: #f8f9fa;
+  font-size: 13px;
+  text-align: right;
+  border-top: none;
+  color: #333;
+}
+
+.note-row td {
+  background: #fff;
+  font-size: 13px;
+  text-align: right;
+  border-top: none;
+  color: #666;
+  font-style: italic;
+}
+
+/* الصف الأساسي */
+.main-row td {
+  background: #fff;
+  border-top: 1px solid #ddd;
+}
+
+/* نفس الخلفية لباقي الصفوف */
+.details-row td,
+.note-row td {
+  background: #fff;
+  border-top: none;
+}
+
+/* أول خلية (يمين) */
+.main-row td:first-child {
+  border-radius: 0 10px 0 0;
+}
+
+/* آخر خلية (شمال) */
+.main-row td:last-child {
+  border-radius: 10px 0 0 0;
+}
+
+/* آخر صف في الكارت (ملاحظات أو تفاصيل) */
+.note-row td,
+.details-row:last-of-type td {
+  border-radius: 0 0 10px 10px;
+}
+
+/* ظل خفيف */
+.main-row td,
+.details-row td,
+.note-row td {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
   </style>
 </head>
 <body>
@@ -123,6 +197,9 @@
   <input id="amount" type="number" placeholder="المبلغ">
   <input id="date" type="date">
   <textarea id="note" placeholder="ملاحظة"></textarea>
+  <input id="from" placeholder="المُسَلِّم">
+<input id="to" placeholder="المُستَلِم">
+<input id="place" placeholder="المكان">
 
   <button onclick="saveTransaction()">حفظ العملية</button>
 
@@ -138,13 +215,12 @@
 
 
 
-  <table id="hisTable" style="display:none;">
+  <table id="hisTable" style="display:none;  border-collapse: separate; border-spacing: 0 10px;">
     <thead>
       <tr>
         <th>التاريخ</th>
         <th>النوع</th>
         <th>المبلغ</th>
-        <th>ملاحظة</th>
         <th>حذف</th>
       </tr>
     </thead>
@@ -245,19 +321,39 @@ function loadTransactions() {
         sorted.forEach(([id, t]) => {
           total += t.type === "add" ? Number(t.amount) : -Number(t.amount);
 
-          html += `
-            <tr>
-              <td>${t.date}</td>
-              <td class="${t.type === 'add' ? 'green' : 'red'}">
-                ${t.type === 'add' ? 'إضافة' : 'مصروف'}
-              </td>
-              <td>${t.amount}</td>
-              <td>${t.note || ''}</td>
-              <td>
-                <button class="btn-del" onclick="deleteTransaction('${id}')">🗑️</button>
-              </td>
-            </tr>
-          `;
+      html += `
+  <!-- الصف الأساسي -->
+  <tr >
+    <td>${t.date}</td>
+    <td class="${t.type === 'add' ? 'green' : 'red'}">
+      ${t.type === 'add' ? 'إضافة' : 'مصروف'}
+    </td>
+    <td>${t.amount}</td>
+    <td>
+      <button class="btn-del" onclick="deleteTransaction('${id}')">🗑️</button>
+    </td>
+  </tr>
+
+  <!-- صف التفاصيل -->
+  <tr class="details-row">
+    <td colspan="4">
+      👤 من: ${t.from || '-'} |
+      👤 إلى: ${t.to || '-'} |
+      📍 المكان: ${t.place || '-'}
+    </td>
+  </tr>
+
+  <!-- صف الملاحظات -->
+  ${t.note ? `
+  <tr class="note-row">
+    <td colspan="4">
+      📝 ${t.note}
+    </td>
+  </tr>
+  ` : ''}
+`;
+
+
         });
       }
 
@@ -267,22 +363,25 @@ function loadTransactions() {
 }
 
 
-  function saveTransaction() {
-    if (!amount.value || !date.value) return;
+function saveTransaction() {
+  if (!amount.value || !date.value) return;
 
-    fetch(`${DB}/${currentEmpId}/transactions.json`, {
-      method: "POST",
-      body: JSON.stringify({
-        type: type.value,
-        amount: amount.value,
-        date: date.value,
-        note: note.value
-      })
-    }).then(() => {
-      amount.value = note.value = "";
-      loadTransactions();
-    });
-  }
+  fetch(`${DB}/${currentEmpId}/transactions.json`, {
+    method: "POST",
+    body: JSON.stringify({
+      type: type.value,
+      amount: amount.value,
+      date: date.value,
+      note: note.value,
+      from: from.value,
+      to: to.value,
+      place: place.value
+    })
+  }).then(() => {
+    amount.value = note.value = from.value = to.value = place.value = "";
+    loadTransactions();
+  });
+}
 
   function deleteTransaction(id) {
     if (!confirm("هل أنت متأكد من حذف العملية؟")) return;
