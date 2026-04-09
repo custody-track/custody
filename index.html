@@ -56,7 +56,7 @@
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyAweoEcVjZXM43tqryvvmGU-zXff8gfdQ8",
+ apiKey: "AIzaSyAweoEcVjZXM43tqryvvmGU-zXff8gfdQ8",
   authDomain: "fady-odas.firebaseapp.com",
   databaseURL: "https://fady-odas-default-rtdb.firebaseio.com"
 };
@@ -74,26 +74,36 @@ function loginWithGoogle() {
   auth.signInWithRedirect(provider);
 }
 
-// 🔥 أهم جزء (بيحل المشكلة)
+// ✅ الحل الأساسي هنا
 auth.onAuthStateChanged(user => {
+
   if (user) {
     setupUser(user);
+  } else {
+    // لو مش مسجل دخول
+    document.getElementById("startBox").style.display = "block";
+    document.getElementById("panel").style.display = "none";
   }
+
 });
 
+// 👤 تجهيز المستخدم
 function setupUser(user) {
+
+  console.log("User logged in:", user); // للتأكد
+
   currentEmpId = user.uid;
 
   document.getElementById("empName").innerText =
-    "المستخدم: " + user.displayName;
+    "المستخدم: " + (user.displayName || user.email);
 
   document.getElementById("startBox").style.display = "none";
   document.getElementById("panel").style.display = "block";
 
   // حفظ بيانات المستخدم
   db.ref("employees/" + user.uid).update({
-    name: user.displayName,
-    email: user.email
+    name: user.displayName || "",
+    email: user.email || ""
   });
 
   loadTransactions();
