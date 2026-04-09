@@ -82,6 +82,22 @@ function loginWithGoogle() {
   });
 }
 
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentEmpId = user.uid;
+
+    document.getElementById("empName").innerText = user.displayName;
+
+    document.getElementById("startBox").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+
+    loadTransactions();
+  } else {
+    document.getElementById("startBox").style.display = "block";
+    document.getElementById("panel").style.display = "none";
+  }
+});
+
 function saveTransaction() {
   const type = document.getElementById("type").value;
   const amount = document.getElementById("amount").value;
