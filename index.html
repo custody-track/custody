@@ -98,6 +98,18 @@ auth.onAuthStateChanged(user => {
   }
 });
 
+window.onload = function () {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
+
+  document.getElementById("date").value = formattedDate;
+};
+
 function saveTransaction() {
   const type = document.getElementById("type").value;
   const amount = document.getElementById("amount").value;
@@ -110,6 +122,8 @@ function saveTransaction() {
     type, amount, date, note
   }).then(loadTransactions);
 }
+
+document.getElementById("date").value = new Date().toISOString().split('T')[0];
 
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
