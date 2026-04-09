@@ -2,410 +2,127 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>CUSTODY</title>
+  <title>CUSTODY (Firebase Secure)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
-      font-family: Arial;
-      direction: rtl;
-      padding: 10px;
-      background: #f9f9f9;
-    }
-
-    h2, h3, h4 { text-align: center; }
-
-    input, button, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 6px 0;
-      font-size: 16px;
-    }
-
-    input{
-      max-width: 90%;
-    }
-    button {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-del {
-      background: #dc3545;
-      font-size: 13px;
-      padding: 6px;
-    }
-
-    textarea { min-height: 60px; max-width: 90%; }
-
-    .box {
-      background: #fff;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,.1);
-      margin-bottom: 15px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    th { background: #f2f2f2; }
-    .green { color: green; font-weight: bold; }
-    .red { color: red; font-weight: bold; }
-
-    .balance-box {
-      margin-top: 10px;
-      padding: 10px;
-      background: #e9f5ff;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 6px;
-    }
-
-
-    .note-row td {
-  background: #f2f2f2;   /* نفس لون الهيدر أو قريب منه */
-  font-size: 13px;
-  text-align: right;
-  border-top: none;      /* يشيل الخط اللي بيفصلهم */
-}
-
-.note-label {
-  font-weight: bold;
-  margin-left: 5px;
-}
-
-.note-row td {
-  background: #fff;
-  border-top: none;
-  color: #555;
-  font-style: italic;
-}
-
-.details-row td {
-  background: #f8f9fa;
-  font-size: 13px;
-  text-align: right;
-  border-top: none;
-  color: #333;
-}
-
-.note-row td {
-  background: #fff;
-  font-size: 13px;
-  text-align: right;
-  border-top: none;
-  color: #666;
-  font-style: italic;
-}
-
-/* الصف الأساسي */
-.main-row td {
-  background: #fff;
-  border-top: 1px solid #ddd;
-}
-
-/* نفس الخلفية لباقي الصفوف */
-.details-row td,
-.note-row td {
-  background: #fff;
-  border-top: none;
-}
-
-/* أول خلية (يمين) */
-.main-row td:first-child {
-  border-radius: 0 10px 0 0;
-}
-
-/* آخر خلية (شمال) */
-.main-row td:last-child {
-  border-radius: 10px 0 0 0;
-}
-
-/* آخر صف في الكارت (ملاحظات أو تفاصيل) */
-.note-row td,
-.details-row:last-of-type td {
-  border-radius: 0 0 10px 10px;
-}
-
-/* ظل خفيف */
-.main-row td,
-.details-row td,
-.note-row td {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
+    body {font-family: Arial; direction: rtl; padding: 10px; background: #f9f9f9;}
+    h2,h3,h4{text-align:center}
+    input,button,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px}
+    button{background:#007bff;color:#fff;border:none;border-radius:6px;cursor:pointer}
+    .box{background:#fff;padding:12px;border-radius:8px;box-shadow:0 0 8px rgba(0,0,0,.1);margin-bottom:15px}
+    .balance-box{margin-top:10px;padding:10px;background:#e9f5ff;text-align:center;font-size:18px;font-weight:bold;border-radius:6px}
+    .card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
+    .card-main{display:flex;justify-content:space-between;font-weight:bold;background:#f8f9fa;padding:8px;border-radius:8px}
+    .green{color:green}.red{color:red}
   </style>
 </head>
 <body>
 
-
-<!-- شاشة البداية -->
 <div id="startBox" class="box">
   <h2>مرحبًا</h2>
-  <button onclick="showLogin()">دخول</button>
-  <button onclick="showAdd()" style="background:#fff;color:#000">تسجيل مستخدم جديد</button>
+  <button onclick="loginWithGoogle()">تسجيل الدخول بجيميل</button>
 </div>
 
-<!-- إضافة مستخدم -->
-<div id="addBox" class="box" style="display:none;">
-  <h2>إضافة مستخدم جديد</h2>
-  <input id="add_name" placeholder="الاسم">
-  <input id="add_username" placeholder="اسم المستخدم">
-  <input id="add_password" type="password" placeholder="كلمة المرور">
-  <button onclick="addEmployee()">حفظ المستخدم</button>
-  <p id="add_msg"></p>
-</div>
-
-<!-- تسجيل دخول -->
-<div id="loginBox" class="box" style="display:none;">
-  <h2>تسجيل دخول</h2>
-  <input id="login_username" placeholder="اسم المستخدم">
-  <input id="login_password" type="password" placeholder="كلمة المرور">
-  <button onclick="login()">دخول</button>
-</div>
-
-<!-- لوحة العهدة -->
 <div id="panel" class="box" style="display:none;">
-
-    <H6>"اَلأَمِينُ فِي الْقَلِيلِ أَمِينٌ أَيْضًا فِي الْكَثِيرِ، وَالظَّالِمُ فِي الْقَلِيلِ ظَالِمٌ أَيْضًا فِي الْكَثِيرِ"</H6>
-
-
   <h3 id="empName"></h3>
 
-  <h4>تسجيل عملية</h4>
-
   <select id="type">
-    <option value="add">إضافة عهدة</option>
+    <option value="add">إضافة</option>
     <option value="expense">مصروف</option>
   </select>
 
   <input id="amount" type="number" placeholder="المبلغ">
   <input id="date" type="date">
   <textarea id="note" placeholder="ملاحظة"></textarea>
-  <input id="from" placeholder="المُسَلِّم">
-<input id="to" placeholder="المُستَلِم">
-<input id="place" placeholder="المكان">
 
-  <button onclick="saveTransaction()">حفظ العملية</button>
+  <button onclick="saveTransaction()">حفظ</button>
 
-<div class="balance-box">
-    الرصيد الحالي: <span id="balance">0</span> جنيه
-  </div>
-
-
-  <BUtton id="SHOWHIS" style="display: none; background-color: rgb(4, 149, 149);" >
- عرض سجل
-</BUtton>
-
-
-
-
-  <table id="hisTable" style="display:none;  border-collapse: separate; border-spacing: 0 10px;">
-    <thead>
-      <tr>
-        <th>التاريخ</th>
-        <th>النوع</th>
-        <th>المبلغ</th>
-        <th>حذف</th>
-      </tr>
-    </thead>
-    <tbody id="transactions"></tbody>
-  </table>
-
-  
+  <div class="balance-box">الرصيد: <span id="balance">0</span></div>
+  <div id="transactions"></div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
-  const DB = "https://fady-odas-default-rtdb.firebaseio.com/employees";
-  let currentEmpId = null;
+const firebaseConfig = {
+  apiKey: "AIzaSyAweoEcVjZXM43tqryvvmGU-zXff8gfdQ8",
+  authDomain: "fady-odas.firebaseapp.com",
+  databaseURL: "https://fady-odas-default-rtdb.firebaseio.com"
+};
 
-  document.addEventListener("DOMContentLoaded", () => {
-    date.value = new Date().toISOString().split("T")[0];
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+let currentEmpId = null;
+
+const provider = new firebase.auth.GoogleAuthProvider();
+
+function loginWithGoogle() {
+  auth.signInWithPopup(provider).then(res => {
+    const user = res.user;
+    currentEmpId = user.uid;
+
+    document.getElementById("empName").innerText = user.displayName;
+
+    document.getElementById("startBox").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+
+    // حفظ بيانات المستخدم
+    db.ref("employees/" + user.uid).update({
+      name: user.displayName,
+      email: user.email
+    });
+
+    loadTransactions();
   });
+}
 
-  function showAdd() {
-    startBox.style.display = "none";
-    addBox.style.display = "block";
-    
-  }
+function saveTransaction() {
+  const type = document.getElementById("type").value;
+  const amount = document.getElementById("amount").value;
+  const date = document.getElementById("date").value;
+  const note = document.getElementById("note").value;
 
-  function showLogin() {
-    startBox.style.display = "none";
-    loginBox.style.display = "block";
-    
-  }
+  if (!amount) return;
 
-  function addEmployee() {
-    if (!add_name.value || !add_username.value || !add_password.value) return;
+  db.ref("employees/" + currentEmpId + "/transactions").push({
+    type, amount, date, note
+  }).then(loadTransactions);
+}
 
-    fetch(DB + ".json")
-      .then(r => r.json())
-      .then(data => {
-        for (let id in data) {
-          if (data[id].username === add_username.value) {
-            add_msg.textContent = "اسم المستخدم مستخدم";
-            return;
-          }
-        }
-
-        fetch(DB + ".json", {
-          method: "POST",
-          body: JSON.stringify({
-            name: add_name.value,
-            username: add_username.value,
-            password: add_password.value,
-            transactions: {}
-          })
-        }).then(() => {
-          add_msg.textContent = "تمت الإضافة بنجاح";
-          setTimeout(() => {
-            addBox.style.display = "none";
-            startBox.style.display = "block";
-            SHOWHIS.style.display = "block";
-          }, 1500);
-        });
-      });
-  }
-
-  function login() {
-    fetch(DB + ".json")
-      .then(r => r.json())
-      .then(data => {
-        for (let id in data) {
-          if (
-            data[id].username === login_username.value &&
-            data[id].password === login_password.value
-          ) {
-            currentEmpId = id;
-            empName.textContent = "المستخدم : " + data[id].name;
-            panel.style.display = "block";
-            loginBox.style.display = "none";
-            startBox.style.display = "none";
-            SHOWHIS.style.display = "block";
-            loadTransactions();
-            return;
-          }
-        }
-        alert("بيانات الدخول غير صحيحة");
-      });
-  }
 function loadTransactions() {
-  fetch(`${DB}/${currentEmpId}/transactions.json`)
-    .then(r => r.json())
-    .then(data => {
+  db.ref("employees/" + currentEmpId + "/transactions")
+    .once("value", snap => {
+      const data = snap.val();
       let html = "";
       let total = 0;
 
-      if (data) {
-        // تحويل object إلى array + ترتيب بالتاريخ (الأقدم → الأحدث)
-        const sorted = Object.entries(data).sort((a, b) => {
-          return new Date(a[1].date) - new Date(b[1].date);
-        });
+      for (let id in data) {
+        const t = data[id];
+        total += t.type === "add" ? +t.amount : -t.amount;
 
-        sorted.forEach(([id, t]) => {
-          total += t.type === "add" ? Number(t.amount) : -Number(t.amount);
-
-      html += `
-  <!-- الصف الأساسي -->
-  <tr >
-    <td>${t.date}</td>
-    <td class="${t.type === 'add' ? 'green' : 'red'}">
-      ${t.type === 'add' ? 'إضافة' : 'مصروف'}
-    </td>
-    <td>${t.amount}</td>
-    <td>
-      <button class="btn-del" onclick="deleteTransaction('${id}')">🗑️</button>
-    </td>
-  </tr>
-
-  <!-- صف التفاصيل -->
-  <tr class="details-row">
-    <td colspan="4">
-      👤 من: ${t.from || '-'} |
-      👤 إلى: ${t.to || '-'} |
-      📍 المكان: ${t.place || '-'}
-    </td>
-  </tr>
-
-  <!-- صف الملاحظات -->
-  ${t.note ? `
-  <tr class="note-row">
-    <td colspan="4">
-      📝 ${t.note}
-    </td>
-  </tr>
-  ` : ''}
-`;
-
-
-        });
+        html += `
+        <div class="card">
+          <div class="card-main">
+            <div>${t.date}</div>
+            <div class="${t.type === 'add' ? 'green':'red'}">
+              ${t.type === 'add' ? 'إضافة':'مصروف'}
+            </div>
+            <div>${t.amount}</div>
+          </div>
+          <div>${t.note || ''}</div>
+        </div>`;
       }
 
       document.getElementById("transactions").innerHTML = html;
       document.getElementById("balance").innerText = total;
     });
 }
-
-
-function saveTransaction() {
-  if (!amount.value || !date.value) return;
-
-  fetch(`${DB}/${currentEmpId}/transactions.json`, {
-    method: "POST",
-    body: JSON.stringify({
-      type: type.value,
-      amount: amount.value,
-      date: date.value,
-      note: note.value,
-      from: from.value,
-      to: to.value,
-      place: place.value
-    })
-  }).then(() => {
-    amount.value = note.value = from.value = to.value = place.value = "";
-    loadTransactions();
-  });
-}
-
-  function deleteTransaction(id) {
-    if (!confirm("هل أنت متأكد من حذف العملية؟")) return;
-
-    fetch(`${DB}/${currentEmpId}/transactions/${id}.json`, {
-      method: "DELETE"
-    }).then(loadTransactions);
-  }
-
-
-
-  SHOWHIS.addEventListener("click", function () {
-  const table = document.getElementById("hisTable");
-
-  if (table.style.display === "none") {
-    table.style.display = "table";
-    SHOWHIS.textContent = "إخفاء السجل";
-  } else {
-    table.style.display = "none";
-    SHOWHIS.textContent = "سجل العمليات";
-  }
-});
-
-
 </script>
 
 </body>
