@@ -188,7 +188,6 @@ window.onload = function () {
 };
 
 function saveTransaction() {
-
   showLoading();
 
   const type = document.getElementById("type").value;
@@ -200,21 +199,35 @@ function saveTransaction() {
   const church = document.getElementById("church").value;
   const servant = document.getElementById("servant").value;
 
-  if (!amount) return;
-
-  db.ref("employees/" + currentEmpId + "/transactions").push({
-    type,
-    amount,
-    date,
-    note,
-    sector,
-    church,
-    servant
-  }).then(loadTransactions);
+  if (!amount) {
     hideLoading();
+    alert("من فضلك أدخل المبلغ");
+    return;
+  }
 
+  db.ref("employees/" + currentEmpId + "/transactions")
+    .push({
+      type,
+      amount,
+      date,
+      note,
+      sector,
+      church,
+      servant
+    })
+    .then(() => {
+      hideLoading();
+      loadTransactions();
+
+      alert("✅ تم حفظ المعاملة بنجاح");
+    })
+    .catch((error) => {
+      hideLoading();
+      console.error(error);
+
+      alert("❌ حدث خطأ أثناء الحفظ");
+    });
 }
-
 document.getElementById("date").value = new Date().toISOString().split('T')[0];
 
 function loadTransactions() {
