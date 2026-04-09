@@ -8,15 +8,36 @@
   <style>
     body {font-family: Arial; direction: rtl; padding: 10px; background: #ffffff;}
     h2,h3,h4{text-align:center}
-    input,button,select,textarea{width:90%;padding:12px;margin:6px 0;font-size:16px}
+    input,button,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px}
     button{background:#007bff;color:#fff;border:none;border-radius:6px;cursor:pointer}
     .box{background:#fff;padding:12px;border-radius:8px;margin-bottom:15px}
     .balance-box{margin-top:10px;padding:10px;background:#e9f5ff;text-align:center;font-size:18px;font-weight:bold;border-radius:6px}
     .card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
     .card-main{display:flex;justify-content:space-between;font-weight:bold;background:#f8f9fa;padding:8px;border-radius:8px}
     .green{color:green}.red{color:red}
-    button.delete-btn {
-  background: #dc3545;
+    button.delete-btn {background: #dc3545;}
+
+        .spinner-container {
+  text-align: center;
+  margin-top: 20px;
+  color: #444;
+  font-weight: bold;
+}
+
+.spinner {
+  margin: 0 auto 10px;
+  width: 24px;
+  height: 24px;
+  border: 5px solid #ccc;
+  border-top: 5px solid  #0d323b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
   </style>
 </head>
@@ -62,7 +83,12 @@
   <input id="date" type="date">
   <textarea id="note" placeholder="ملاحظة"></textarea>
 
-  <button onclick="saveTransaction()">حفظ</button>
+   <div id="loading" class="spinner-container" style="display: none;">
+      <div class="spinner"></div>
+      <p>جاري التحميل...</p>
+    </div>
+
+  <button id="saveBtn" onclick="saveTransaction()">حفظ</button>
 
   <div class="balance-box">الرصيد: <span id="balance">0</span></div>
   <div id="transactions"></div>
@@ -162,6 +188,9 @@ window.onload = function () {
 };
 
 function saveTransaction() {
+
+  showLoading();
+
   const type = document.getElementById("type").value;
   const amount = document.getElementById("amount").value;
   const date = document.getElementById("date").value;
@@ -182,6 +211,8 @@ function saveTransaction() {
     church,
     servant
   }).then(loadTransactions);
+    hideLoading();
+
 }
 
 document.getElementById("date").value = new Date().toISOString().split('T')[0];
@@ -290,6 +321,26 @@ function deleteTransaction(id) {
     });
 }
 
+
+
+    function showLoading() {
+  document.getElementById("loading").style.display = "block";
+
+    const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.style.opacity = "0.6";
+  btn.style.cursor = "not-allowed";
+  btn.textContent = "جاري الحفظ...";
+}
+
+function hideLoading() {
+  document.getElementById("loading").style.display = "none";
+   const btn = document.getElementById("saveBtn");
+  btn.disabled = false;
+  btn.style.opacity = "1";
+  btn.style.cursor = "pointer";
+  btn.textContent = "حفظ العملية";
+}
 
 </script>
 
