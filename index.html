@@ -34,7 +34,7 @@
 
 <select id="sector" onchange="loadChurches()">
   <option value="">اختر القطاع</option>
-  <option value="قطاع شرق">قطاع شرق</option>
+  <option value="قطاع شرق الأسكندرية">قطاع شرق الأسكندرية</option>
 </select>
 
 <select id="church" onchange="loadServants()">
@@ -81,15 +81,15 @@ const provider = new firebase.auth.GoogleAuthProvider();
 
 
 const data = {
-  "قطاع شرق": {
+  "قطاع شرق الأسكندرية": {
     churches: {
-      "كنيسة العذراء": {
-        servants: ["جرجس", "بيشوي"]
+      "كنيسة غربال": {
+        servants: ["رانيا سامي", "ماجد سمير"]
       }
     },
     churches: {
-      "كنيسة العذراء": {
-        servants: ["جرجس", "بيشوي"]
+      "كنيسة كوبري الناموس": {
+        servants: ["مارتينا روق", "سناء بشري"]
       }
     }
   }
