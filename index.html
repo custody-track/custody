@@ -96,6 +96,19 @@
 
 
 
+<div id="toast" style="
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#333;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:8px;
+  display:none;
+"></div>
+
+
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -138,6 +151,19 @@ const data = {
     }
   }
 };
+
+
+
+function showToast(msg, color="#333") {
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+  toast.style.background = color;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3000);
+}
 
 function loginWithGoogle() {
   auth.signInWithPopup(provider).then(res => {
@@ -202,6 +228,7 @@ function saveTransaction() {
   if (!amount) {
     hideLoading();
     alert("من فضلك أدخل المبلغ");
+    showToast("من فضلك أدخل المبلغ", "red");
     return;
   }
 
@@ -223,15 +250,14 @@ document.getElementById("date").value = new Date().toISOString().split('T')[0];
 
 
       loadTransactions();
-      alert("✅ تم حفظ المعاملة بنجاح");
+showToast("تم الحفظ بنجاح ✅", "green");
 
     })
     .catch((error) => {
       hideLoading();
       console.error(error);
 
-      alert("❌ حدث خطأ أثناء الحفظ");
-    });
+showToast("حدث خطأ ❌", "red");    });
 }
 
 function loadTransactions() {
