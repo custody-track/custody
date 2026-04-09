@@ -37,16 +37,15 @@
   <option value="قطاع 1">قطاع شرق الاسكندرية</option>
 </select>
 
-<select id="church">
-  <option value="">اختر الكنيسة</option>
+<select id="church" onchange="loadServants()">
+    <option value="">اختر الكنيسة</option>
   <option value="كنيسة مارجرجس">كنيسة غربال</option>
   <option value="كنيسة العذراء">كنيسة كوبري الناموس</option>
 </select>
 
 <select id="servant">
   <option value="">اختر الخادم</option>
-  <option value="فادي">فادي</option>
-  <option value="مينا">مينا</option>
+  
 </select>
 
   <input id="amount" type="number" placeholder="المبلغ">
@@ -59,10 +58,14 @@
   <div id="transactions"></div>
 </div>
 
+
+
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
 
 <script>
 const firebaseConfig = {
@@ -78,6 +81,16 @@ const db = firebase.database();
 let currentEmpId = null;
 
 const provider = new firebase.auth.GoogleAuthProvider();
+
+
+const churchesData = {
+  "كنيسة مارجرجس": {
+    servants: ["فادي", "مينا"]
+  },
+  "كنيسة العذراء": {
+    servants: ["كيرلس", "بولا"]
+  }
+};
 
 function loginWithGoogle() {
   auth.signInWithPopup(provider).then(res => {
@@ -196,7 +209,24 @@ function logout() {
   });
 }
 
+function loadServants() {
+  const church = document.getElementById("church").value;
+  const servantSelect = document.getElementById("servant");
 
+  // reset
+  servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
+
+  if (!church || !churchesData[church]) return;
+
+  const servants = churchesData[church].servants;
+
+  servants.forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    servantSelect.appendChild(option);
+  });
+}
 
 </script>
 
