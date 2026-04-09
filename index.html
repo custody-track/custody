@@ -217,9 +217,14 @@ function saveTransaction() {
     })
     .then(() => {
       hideLoading();
-      loadTransactions();
 
+        amount.value = type.value = amount.value = note.value =  "";
+document.getElementById("date").value = new Date().toISOString().split('T')[0];
+
+
+      loadTransactions();
       alert("✅ تم حفظ المعاملة بنجاح");
+
     })
     .catch((error) => {
       hideLoading();
@@ -228,7 +233,6 @@ function saveTransaction() {
       alert("❌ حدث خطأ أثناء الحفظ");
     });
 }
-document.getElementById("date").value = new Date().toISOString().split('T')[0];
 
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
