@@ -32,15 +32,13 @@
     <option value="expense">مصروف</option>
   </select>
 
-  <select id="sector">
+<select id="sector" onchange="loadChurches()">
   <option value="">اختر القطاع</option>
-  <option value="قطاع 1">قطاع شرق الاسكندرية</option>
+  <option value="قطاع شرق">قطاع شرق</option>
 </select>
 
 <select id="church" onchange="loadServants()">
-    <option value="">اختر الكنيسة</option>
-  <option value="كنيسة غربال">كنيسة غربال</option>
-  <option value="كنيسة كوبري الناموس">كنيسة كوبري الناموس</option>
+  <option value="">اختر الكنيسة</option>
 </select>
 
 <select id="servant">
@@ -82,12 +80,18 @@ let currentEmpId = null;
 const provider = new firebase.auth.GoogleAuthProvider();
 
 
-const churchesData = {
-  "كنيسة غربال": {
-    servants: ["رانيا سامي", "ماجد سمير"]
-  },
-  "كنيسة كوبري الناموس": {
-    servants: ["مارتينا رزق", "سناء بشري"]
+const data = {
+  "قطاع شرق": {
+    churches: {
+      "كنيسة العذراء": {
+        servants: ["جرجس", "بيشوي"]
+      }
+    },
+    churches: {
+      "كنيسة العذراء": {
+        servants: ["جرجس", "بيشوي"]
+      }
+    }
   }
 };
 
@@ -209,15 +213,16 @@ function logout() {
 }
 
 function loadServants() {
+  const sector = document.getElementById("sector").value;
   const church = document.getElementById("church").value;
   const servantSelect = document.getElementById("servant");
 
   // reset
   servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
 
-  if (!church || !churchesData[church]) return;
+  if (!sector || !church) return;
 
-  const servants = churchesData[church].servants;
+  const servants = data[sector]?.churches[church]?.servants || [];
 
   servants.forEach(name => {
     const option = document.createElement("option");
@@ -225,6 +230,28 @@ function loadServants() {
     option.textContent = name;
     servantSelect.appendChild(option);
   });
+}
+
+
+function loadChurches() {
+  const sector = document.getElementById("sector").value;
+  const churchSelect = document.getElementById("church");
+  const servantSelect = document.getElementById("servant");
+
+  // reset
+  churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
+  servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
+
+  if (!sector || !data[sector]) return;
+
+  const churches = data[sector].churches;
+
+  for (let churchName in churches) {
+    const option = document.createElement("option");
+    option.value = churchName;
+    option.textContent = churchName;
+    churchSelect.appendChild(option);
+  }
 }
 
 </script>
