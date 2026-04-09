@@ -15,6 +15,9 @@
     .card{background:#fff;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
     .card-main{display:flex;justify-content:space-between;font-weight:bold;background:#f8f9fa;padding:8px;border-radius:8px}
     .green{color:green}.red{color:red}
+    button.delete-btn {
+  background: #dc3545;
+}
   </style>
 </head>
 <body>
@@ -176,6 +179,8 @@ const data = snap.val() || {};
       for (let id in data) {
         const t = data[id];
         total += t.type === "add" ? +t.amount : -t.amount;
+
+        
 html += `
 <div class="card">
   <div class="card-main">
@@ -193,6 +198,11 @@ html += `
     الكنيسة: ${t.church || '-'} <br>
     الخادم: ${t.servant || '-'}
   </div>
+
+  <button onclick="deleteTransaction('${id}')" 
+    style="background:#dc3545; margin-top:8px;">
+    حذف
+  </button>
 </div>`;
 
 
@@ -251,6 +261,18 @@ function loadChurches() {
     churchSelect.appendChild(option);
   }
 }
+
+
+function deleteTransaction(id) {
+  if (!confirm("هل أنت متأكد من حذف المعاملة؟")) return;
+
+  db.ref("employees/" + currentEmpId + "/transactions/" + id)
+    .remove()
+    .then(() => {
+      loadTransactions();
+    });
+}
+
 
 </script>
 
