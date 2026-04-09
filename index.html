@@ -26,7 +26,7 @@
 
 <div id="panel" class="box" style="display:none;">
   <h3 id="empName"></h3>
-
+<button onclick="logout()" style="background:#dc3545">تسجيل خروج</button>
   <select id="type">
     <option value="add">إضافة</option>
     <option value="expense">مصروف</option>
@@ -114,7 +114,7 @@ function saveTransaction() {
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
     .once("value", snap => {
-      const data = snap.val();
+const data = snap.val() || {};
       let html = "";
       let total = 0;
 
@@ -139,6 +139,16 @@ function loadTransactions() {
       document.getElementById("balance").innerText = total;
     });
 }
+
+
+function logout() {
+  auth.signOut().then(() => {
+    currentEmpId = null;
+  });
+}
+
+
+
 </script>
 
 </body>
