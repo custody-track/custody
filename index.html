@@ -28,9 +28,26 @@
   <h3 id="empName"></h3>
 <button onclick="logout()" style="background:#dc3545">تسجيل خروج</button>
   <select id="type">
-    <option value="add">إضافة</option>
+    <option value="add">إستلام عهدة</option>
     <option value="expense">مصروف</option>
   </select>
+
+  <select id="sector">
+  <option value="">اختر القطاع</option>
+  <option value="قطاع 1">قطاع شرق الاسكندرية</option>
+</select>
+
+<select id="church">
+  <option value="">اختر الكنيسة</option>
+  <option value="كنيسة مارجرجس">كنيسة غربال</option>
+  <option value="كنيسة العذراء">كنيسة كوبري الناموس</option>
+</select>
+
+<select id="servant">
+  <option value="">اختر الخادم</option>
+  <option value="فادي">فادي</option>
+  <option value="مينا">مينا</option>
+</select>
 
   <input id="amount" type="number" placeholder="المبلغ">
   <input id="date" type="date">
@@ -116,10 +133,20 @@ function saveTransaction() {
   const date = document.getElementById("date").value;
   const note = document.getElementById("note").value;
 
+  const sector = document.getElementById("sector").value;
+  const church = document.getElementById("church").value;
+  const servant = document.getElementById("servant").value;
+
   if (!amount) return;
 
   db.ref("employees/" + currentEmpId + "/transactions").push({
-    type, amount, date, note
+    type,
+    amount,
+    date,
+    note,
+    sector,
+    church,
+    servant
   }).then(loadTransactions);
 }
 
@@ -135,18 +162,26 @@ const data = snap.val() || {};
       for (let id in data) {
         const t = data[id];
         total += t.type === "add" ? +t.amount : -t.amount;
+html += `
+<div class="card">
+  <div class="card-main">
+    <div>${t.date}</div>
+    <div class="${t.type === 'add' ? 'green':'red'}">
+      ${t.type === 'add' ? 'إضافة':'مصروف'}
+    </div>
+    <div>${t.amount}</div>
+  </div>
 
-        html += `
-        <div class="card">
-          <div class="card-main">
-            <div>${t.date}</div>
-            <div class="${t.type === 'add' ? 'green':'red'}">
-              ${t.type === 'add' ? 'إضافة':'مصروف'}
-            </div>
-            <div>${t.amount}</div>
-          </div>
-          <div>${t.note || ''}</div>
-        </div>`;
+  <div>${t.note || ''}</div>
+
+  <div style="margin-top:6px; font-size:14px; color:#555;">
+    القطاع: ${t.sector || '-'} <br>
+    الكنيسة: ${t.church || '-'} <br>
+    الخادم: ${t.servant || '-'}
+  </div>
+</div>`;
+
+
       }
 
       document.getElementById("transactions").innerHTML = html;
