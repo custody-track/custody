@@ -331,7 +331,11 @@ window.onload = function () {
   // تشغيل الدالة
   loadEbrash();
 
-  
+  const type = document.getElementById("type");
+  type.value = "expense";
+  toggleFields();
+
+
   const today = new Date();
 
   const year = today.getFullYear();
@@ -387,7 +391,7 @@ function saveTransaction() {
     if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
   }
 
-  
+
   if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
