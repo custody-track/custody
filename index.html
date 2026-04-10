@@ -134,6 +134,16 @@ padding-left: 10px;
   animation: shake 0.3s;
 }
 
+
+select.placeholder {
+  color: #999; /* باهت */
+}
+
+select.selected {
+  color: #000; /* طبيعي */
+}
+
+
   </style>
 </head>
 <body>
@@ -170,16 +180,17 @@ padding-left: 10px;
   <option value="قطاع شرق الأسكندرية">قطاع شرق الأسكندرية</option>
 </select>
 
-<select id="EBRASH" onchange="loadChurches()">
+
+<select id="EBRASH" onchange="loadChurches(); handleSelect(this)" class="placeholder">
   <option value="">اختر الأيبارشية</option>
 </select>
 
 <div id="churchFields">
-  <select id="church" onchange="loadServants()">
+  <select id="church" onchange="loadServants(); handleSelect(this)" class="placeholder">
     <option value="">اختر الكنيسة</option>
   </select>
 
-  <select id="servant">
+  <select id="servant" onchange="handleSelect(this)" class="placeholder">
     <option value="">اختر الخادم</option>
   </select>
 </div>
@@ -666,6 +677,17 @@ function clearErrors() {
   document.querySelectorAll(".error").forEach(el => {
     el.classList.remove("error");
   });
+}
+
+
+function handleSelect(el) {
+  if (!el.value) {
+    el.classList.add("placeholder");
+    el.classList.remove("selected");
+  } else {
+    el.classList.remove("placeholder");
+    el.classList.add("selected");
+  }
 }
 
 </script>
