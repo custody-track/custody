@@ -305,7 +305,7 @@ auth.onAuthStateChanged(user => {
   }
 });
 window.onload = function () {
-  
+
     toggleFields();
 
 
@@ -331,9 +331,9 @@ function saveTransaction() {
   showLoading();
 
   const type = document.getElementById("type").value;
-  const amount = document.getElementById("amount").value;
+  const amount = document.getElementById("amount").value.trim();
   const date = document.getElementById("date").value;
-  const note = document.getElementById("note").value;
+  const note = document.getElementById("note").value.trim();
 
   const sector = document.getElementById("sector").value;
   const ebrash = document.getElementById("EBRASH").value;
@@ -342,12 +342,30 @@ function saveTransaction() {
 
   const empName = document.getElementById("empName").innerText;
 
-  if (!amount) {
+  // 🔴 دالة مساعدة لعرض الخطأ
+  function showError(msg) {
     hideLoading();
-    showToast("من فضلك أدخل المبلغ", "red");
-    return;
+    showToast(msg, "red");
   }
 
+  // ✅ تحقق أساسي
+  if (!amount) return showError("من فضلك أدخل المبلغ");
+  if (isNaN(amount) || Number(amount) <= 0) return showError("المبلغ غير صحيح");
+
+  if (!date) return showError("من فضلك اختر التاريخ");
+
+  if (!note) return showError("من فضلك اكتب ملاحظة");
+
+  if (!sector) return showError("من فضلك اختر القطاع");
+
+  // ✅ تحقق خاص بالمصروف فقط
+  if (type === "expense") {
+    if (!ebrash) return showError("من فضلك اختر الإيبارشية");
+    if (!church) return showError("من فضلك اختر الكنيسة");
+    if (!servant) return showError("من فضلك اختر الخادم");
+  }
+
+  // ✅ تجهيز البيانات
   let dataToSave = {
     type,
     amount,
@@ -366,11 +384,13 @@ function saveTransaction() {
     dataToSave.servant = servant;
   }
 
+  // ✅ حفظ البيانات
   db.ref("employees/" + currentEmpId + "/transactions")
     .push(dataToSave)
     .then(() => {
       hideLoading();
 
+      // Reset
       document.getElementById("amount").value = "";
       document.getElementById("note").value = "";
       document.getElementById("date").value =
@@ -385,6 +405,7 @@ function saveTransaction() {
       showToast("حدث خطأ ❌", "red");
     });
 }
+
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
     .once("value", snap => {
