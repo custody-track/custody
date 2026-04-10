@@ -479,15 +479,17 @@ html += `
   <div style="margin-top:6px; font-size:14px; color:#555;">
     ${t.sector || '-'} <br>
 
-    ${
-      t.type === "add"
-        ? `المستلم: ${t.receiver || '-'}`
-        : `
-        ${t.ebrash || '-'} <br>
-        ${t.church || '-'} <br>
-        الخادم: ${t.servant || '-'}
-        `
-    }
+  ${t.ebrash || '-'} <br>
+
+${
+  t.type === "add"
+    ? `المستلم: ${t.receiver || '-'}`
+    : `
+    ${t.church || '-'} <br>
+    الخادم: ${t.servant || '-'}
+    `
+}
+    
   </div>
 
   <button onclick="deleteTransaction('${id}')"
