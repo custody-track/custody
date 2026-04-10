@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {font-family: Arial; direction: rtl; padding: 10px;padding-top: 70PX; background: #ffffff;}
+    body {font-family: Arial; direction: rtl; padding: 10px; background: #ffffff;}
     h2,h3,h4{text-align:center}
     input,button,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px}
     button{background:#007bff;color:#fff;border:none;border-radius:6px;cursor:pointer}
@@ -42,19 +42,18 @@
 
 
 .top-bar {
-    position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-    z-index: 9999;
-
-    justify-content: space-between; /* يوزعهم يمين وشمال */
+  display: flex;
+  justify-content: space-between; /* يوزعهم يمين وشمال */
   align-items: center;
 
   background: #121586; 
   padding: 10px 15px;
 
   color: #fff;
+
+  margin-top: -10PX;
+  margin-right: -10PX;
+  margin-left: -10PX;
 }
 
 .top-bar h3 {
@@ -70,6 +69,7 @@
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
+  
 }
 
 
@@ -186,7 +186,7 @@ const data = {
         servants: ["رانيا سامي", "ماجد سمير"]
       },
 "كنيسة كوبري الناموس": {
-        servants: ["مارتينا روق", "سناء بشري"]
+        servants: ["مارتينا رزق", "سناء بشري"]
       }
     }
   }
