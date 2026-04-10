@@ -150,13 +150,12 @@ padding-left: 10px;
     <option value="expense">مصروف</option>
   </select>
 
-<select id="sector" onchange="loadChurches()">
+<select id="sector" onchange="loadEbrash()">
   <option value="">اختر القطاع</option>
   <option value="قطاع شرق الأسكندرية">قطاع شرق الأسكندرية</option>
 </select>
 
-
-<select id="EBRASH" onchange="loadEbrash()">
+<select id="EBRASH" onchange="loadChurches()">
   <option value="">اختر الأيبارشية</option>
 </select>
 
@@ -420,15 +419,17 @@ function logout() {
 
 function loadServants() {
   const sector = document.getElementById("sector").value;
+  const ebrash = document.getElementById("EBRASH").value;
   const church = document.getElementById("church").value;
+
   const servantSelect = document.getElementById("servant");
 
   // reset
   servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
 
-  if (!sector || !church) return;
+  if (!sector || !ebrash || !church) return;
 
-  const servants = data[sector]?.churches[church]?.servants || [];
+  const servants = data[sector]?.ebrash[ebrash]?.churches[church]?.servants || [];
 
   servants.forEach(name => {
     const option = document.createElement("option");
@@ -441,6 +442,8 @@ function loadServants() {
 
 function loadChurches() {
   const sector = document.getElementById("sector").value;
+  const ebrash = document.getElementById("EBRASH").value;
+
   const churchSelect = document.getElementById("church");
   const servantSelect = document.getElementById("servant");
 
@@ -448,9 +451,9 @@ function loadChurches() {
   churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
   servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
 
-  if (!sector || !data[sector]) return;
+  if (!sector || !ebrash) return;
 
-  const churches = data[sector].churches;
+  const churches = data[sector]?.ebrash[ebrash]?.churches || {};
 
   for (let churchName in churches) {
     const option = document.createElement("option");
