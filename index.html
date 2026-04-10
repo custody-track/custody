@@ -161,8 +161,8 @@ padding-left: 10px;
 </div>
 
 <select id="type" onchange="toggleFields()">
+      <option value="expense">مصروف</option>
     <option value="add">إستلام عهدة</option>
-    <option value="expense">مصروف</option>
   </select>
 
 <select id="sector" onchange="loadEbrash()">
@@ -644,10 +644,12 @@ function toggleFields() {
   // التحكم في الإظهار
   if (type.value === "add") {
     churchFields.style.display = "none";
-    type.style.color = "green"; // 🟢 أخضر
+   type.style.color = "#28a745";
+  type.style.background = "#e9f9ee";
   } else {
     churchFields.style.display = "block";
-    type.style.color = "red"; // 🔴 أحمر
+   type.style.color = "#dc3545";
+  type.style.background = "#fdeaea";
   }
 }
 
