@@ -379,6 +379,15 @@ function saveTransaction() {
   }
 
   // ✅ تحقق
+
+
+    if (type === "expense") {
+    if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
+    if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+    if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
+  }
+
+  
   if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
@@ -489,7 +498,7 @@ ${
     الخادم: ${t.servant || '-'}
     `
 }
-    
+
   </div>
 
   <button onclick="deleteTransaction('${id}')"
