@@ -174,7 +174,7 @@ padding-left: 10px;
 
   <button id="saveBtn" onclick="saveTransaction()">حفظ</button>
 
-  <div class="balance-box">الرصيد: <span id="balance">0</span></div>
+  <div class="balance-box">الرصيد : <span id="balance">0</span> جنية </div>
   <div id="transactions"></div>
 </div>
 
@@ -370,7 +370,7 @@ html += `
     <div class="${t.type === 'add' ? 'green':'red'}">
       ${t.type === 'add' ? 'إستلام عهدة':'مصروف'}
     </div>
-    <div> جنية ${t.amount}</div>
+    <div>${t.amount} جنية </div>
   </div>
 
   <div>${t.note || ''}</div>
