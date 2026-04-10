@@ -379,9 +379,14 @@ function saveTransaction() {
   }
 
   // ✅ تحقق
-  if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+  if (!amount) return 
   if (isNaN(amount) || Number(amount) <= 0)
     return 
+
+
+
+  if (!ebrash) return 
+
 
   if (!date) return 
 
