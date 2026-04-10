@@ -145,7 +145,7 @@ padding-left: 10px;
            <H6 style="margin-top: 2PX;font-family: Arial;">اَلأَمِينُ فِي الْقَلِيلِ أَمِينٌ أَيْضًا فِي الْكَثِيرِ، وَالظَّالِمُ فِي الْقَلِيلِ ظَالِمٌ أَيْضًا فِي الْكَثِيرِ</H6>
 </div>
 
-  <select id="type">
+<select id="type" onchange="toggleFields()">
     <option value="add">إستلام عهدة</option>
     <option value="expense">مصروف</option>
   </select>
@@ -159,13 +159,15 @@ padding-left: 10px;
   <option value="">اختر الأيبارشية</option>
 </select>
 
-<select id="church" onchange="loadServants()">
-  <option value="">اختر الكنيسة</option>
-</select>
+<div id="churchFields">
+  <select id="church" onchange="loadServants()">
+    <option value="">اختر الكنيسة</option>
+  </select>
 
-<select id="servant">
-  <option value="">اختر الخادم</option>
-</select>
+  <select id="servant">
+    <option value="">اختر الخادم</option>
+  </select>
+</div>
 
   <input id="amount" type="number" placeholder="المبلغ">
   <input id="date" type="date">
@@ -303,6 +305,10 @@ auth.onAuthStateChanged(user => {
   }
 });
 window.onload = function () {
+  
+    toggleFields();
+
+
 
   const sectorSelect = document.getElementById("sector");
   sectorSelect.value = "قطاع شرق الأسكندرية";
@@ -321,7 +327,6 @@ window.onload = function () {
 
   document.getElementById("date").value = formattedDate;
 };
-
 function saveTransaction() {
   showLoading();
 
@@ -335,43 +340,51 @@ function saveTransaction() {
   const church = document.getElementById("church").value;
   const servant = document.getElementById("servant").value;
 
+  const empName = document.getElementById("empName").innerText;
+
   if (!amount) {
     hideLoading();
     showToast("من فضلك أدخل المبلغ", "red");
     return;
   }
 
+  let dataToSave = {
+    type,
+    amount,
+    date,
+    note,
+    sector
+  };
+
+  if (type === "add") {
+    // 🔥 استلام عهدة
+    dataToSave.receiver = empName;
+  } else {
+    // 🔥 مصروف
+    dataToSave.ebrash = ebrash;
+    dataToSave.church = church;
+    dataToSave.servant = servant;
+  }
+
   db.ref("employees/" + currentEmpId + "/transactions")
-    .push({
-      type,
-      amount,
-      date,
-      note,
-      sector,
-      ebrash, 
-      church,
-      servant
-    })
+    .push(dataToSave)
     .then(() => {
       hideLoading();
 
-    document.getElementById("amount").value = "";
-document.getElementById("note").value = "";
-
-document.getElementById("date").value = new Date().toISOString().split('T')[0];
-
+      document.getElementById("amount").value = "";
+      document.getElementById("note").value = "";
+      document.getElementById("date").value =
+        new Date().toISOString().split('T')[0];
 
       loadTransactions();
-showToast("تم الحفظ بنجاح ✅", "green");
-
+      showToast("تم الحفظ بنجاح ✅", "green");
     })
     .catch((error) => {
       hideLoading();
       console.error(error);
-
-showToast("حدث خطأ ❌", "red");    });
+      showToast("حدث خطأ ❌", "red");
+    });
 }
-
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
     .once("value", snap => {
@@ -388,9 +401,6 @@ html += `
 
 <div class="card">
 
-
-
-
   <div class="card-main">
     <div>${t.date}</div>
     <div class="${t.type === 'add' ? 'green':'red'}">
@@ -401,19 +411,25 @@ html += `
 
   <div>${t.note || ''}</div>
 
-    <div style="margin-top:6px; font-size:14px; color:#555;">
+  <div style="margin-top:6px; font-size:14px; color:#555;">
     ${t.sector || '-'} <br>
-    ${t.ebrash || '-'} <br> <!-- 🔥 الجديد -->
-    ${t.church || '-'} <br>
-    الخادم: ${t.servant || '-'}
+
+    ${
+      t.type === "add"
+        ? `المستلم: ${t.receiver || '-'}`
+        : `
+        ${t.ebrash || '-'} <br>
+        ${t.church || '-'} <br>
+        الخادم: ${t.servant || '-'}
+        `
+    }
   </div>
 
-  <button  onclick="deleteTransaction('${id}')" 
-    style="color: #a30000;background: none; padding: 0PX;width: 10%; padding: 0PX; margin-top:8px;">
+  <button onclick="deleteTransaction('${id}')"
+    style="color: #a30000;background: none; width: 10%; margin-top:8px;">
     حذف
   </button>
 </div>`;
-
 
       }
 
@@ -530,6 +546,20 @@ function hideLoading() {
   btn.style.cursor = "pointer";
   btn.textContent = "حفظ العملية";
 }
+
+
+function toggleFields() {
+  const type = document.getElementById("type").value;
+  const churchFields = document.getElementById("churchFields");
+
+  if (type === "add") {
+    churchFields.style.display = "none";
+  } else {
+    churchFields.style.display = "block";
+  }
+}
+
+
 
 </script>
 
