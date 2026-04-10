@@ -13,7 +13,8 @@
   background-size: 300px 300px; /* 🔥 تصغير الصورة */ 
   
 
-      direction: rtl; padding: 10px;  font-family: 'Cairo', sans-serif;}
+      direction: rtl; padding: 10px;  font-family: 'Cairo', sans-serif;
+    }
     h2,h3,h4{text-align:center}
     input,button,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px;box-sizing: border-box;font-family: 'Cairo', sans-serif;}
     button{background:#007bff;color:#fff;border:none;border-radius:6px;cursor:pointer}
@@ -262,8 +263,13 @@ auth.onAuthStateChanged(user => {
     document.getElementById("panel").style.display = "none";
   }
 });
-
+history.scrollRestoration = "manual";
 window.onload = function () {
+
+  window.scrollTo(999999, 0);
+
+
+  
   const today = new Date();
 
   const year = today.getFullYear();
