@@ -117,7 +117,22 @@ padding-left: 10px;
   
 }
 
+.error {
+  border: 2px solid #dc3545 !important;
+  background: #ffe6e6;
+}
 
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(4px); }
+  50% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.3s;
+}
 
   </style>
 </head>
@@ -327,42 +342,57 @@ window.onload = function () {
 
   document.getElementById("date").value = formattedDate;
 };
+
 function saveTransaction() {
   showLoading();
 
   const type = document.getElementById("type").value;
-  const amount = document.getElementById("amount").value.trim();
-  const date = document.getElementById("date").value;
-  const note = document.getElementById("note").value.trim();
 
-  const sector = document.getElementById("sector").value;
-  const ebrash = document.getElementById("EBRASH").value;
-  const church = document.getElementById("church").value;
-  const servant = document.getElementById("servant").value;
+  const amountEl = document.getElementById("amount");
+  const dateEl = document.getElementById("date");
+  const noteEl = document.getElementById("note");
+
+  const sectorEl = document.getElementById("sector");
+  const ebrashEl = document.getElementById("EBRASH");
+  const churchEl = document.getElementById("church");
+  const servantEl = document.getElementById("servant");
+
+  const amount = amountEl.value.trim();
+  const date = dateEl.value;
+  const note = noteEl.value.trim();
+
+  const sector = sectorEl.value;
+  const ebrash = ebrashEl.value;
+  const church = churchEl.value;
+  const servant = servantEl.value;
 
   const empName = document.getElementById("empName").innerText;
 
-  // 🔴 دالة مساعدة لعرض الخطأ
-  function showError(msg) {
+  // 🔴 مسح الأخطاء القديمة
+  clearErrors();
+
+  // 🔴 دالة الخطأ
+  function showError(el, msg) {
     hideLoading();
+    setError(el);
     showToast(msg, "red");
   }
 
-  // ✅ تحقق أساسي
-  if (!amount) return showError("من فضلك أدخل المبلغ");
-  if (isNaN(amount) || Number(amount) <= 0) return showError("المبلغ غير صحيح");
+  // ✅ تحقق
+  if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+  if (isNaN(amount) || Number(amount) <= 0)
+    return showError(amountEl, "المبلغ غير صحيح");
 
-  if (!date) return showError("من فضلك اختر التاريخ");
+  if (!date) return showError(dateEl, "من فضلك اختر التاريخ");
 
-  if (!note) return showError("من فضلك اكتب ملاحظة");
+  if (!note) return showError(noteEl, "من فضلك اكتب ملاحظة");
 
-  if (!sector) return showError("من فضلك اختر القطاع");
+  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
-  // ✅ تحقق خاص بالمصروف فقط
   if (type === "expense") {
-    if (!ebrash) return showError("من فضلك اختر الإيبارشية");
-    if (!church) return showError("من فضلك اختر الكنيسة");
-    if (!servant) return showError("من فضلك اختر الخادم");
+    if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
+    if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+    if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
   }
 
   // ✅ تجهيز البيانات
@@ -375,26 +405,22 @@ function saveTransaction() {
   };
 
   if (type === "add") {
-    // 🔥 استلام عهدة
     dataToSave.receiver = empName;
   } else {
-    // 🔥 مصروف
     dataToSave.ebrash = ebrash;
     dataToSave.church = church;
     dataToSave.servant = servant;
   }
 
-  // ✅ حفظ البيانات
+  // ✅ حفظ
   db.ref("employees/" + currentEmpId + "/transactions")
     .push(dataToSave)
     .then(() => {
       hideLoading();
 
-      // Reset
-      document.getElementById("amount").value = "";
-      document.getElementById("note").value = "";
-      document.getElementById("date").value =
-        new Date().toISOString().split('T')[0];
+      amountEl.value = "";
+      noteEl.value = "";
+      dateEl.value = new Date().toISOString().split('T')[0];
 
       loadTransactions();
       showToast("تم الحفظ بنجاح ✅", "green");
@@ -405,6 +431,17 @@ function saveTransaction() {
       showToast("حدث خطأ ❌", "red");
     });
 }
+
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    el.classList.remove("error");
+  });
+
+  el.addEventListener("change", () => {
+    el.classList.remove("error");
+  });
+});
+
 
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
@@ -581,6 +618,19 @@ function toggleFields() {
 }
 
 
+function setError(el) {
+  el.classList.add("error", "shake");
+
+  setTimeout(() => {
+    el.classList.remove("shake");
+  }, 300);
+}
+
+function clearErrors() {
+  document.querySelectorAll(".error").forEach(el => {
+    el.classList.remove("error");
+  });
+}
 
 </script>
 
