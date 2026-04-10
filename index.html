@@ -304,7 +304,11 @@ auth.onAuthStateChanged(user => {
 });
 window.onload = function () {
 
+  const sectorSelect = document.getElementById("sector");
+  sectorSelect.value = "قطاع شرق الأسكندرية";
 
+  // تشغيل الدالة
+  loadEbrash();
 
   
   const today = new Date();
