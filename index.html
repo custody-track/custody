@@ -327,6 +327,7 @@ function saveTransaction() {
   const note = document.getElementById("note").value;
 
   const sector = document.getElementById("sector").value;
+  const ebrash = document.getElementById("EBRASH").value;
   const church = document.getElementById("church").value;
   const servant = document.getElementById("servant").value;
 
@@ -343,6 +344,7 @@ function saveTransaction() {
       date,
       note,
       sector,
+      ebrash, 
       church,
       servant
     })
@@ -392,6 +394,7 @@ html += `
 
   <div style="margin-top:6px; font-size:14px; color:#555;">
     القطاع: ${t.sector || '-'} <br>
+      الإيبارشية: ${t.ebrash || '-'} <br> <!-- 🔥 الجديد -->
     الكنيسة: ${t.church || '-'} <br>
     الخادم: ${t.servant || '-'}
   </div>
