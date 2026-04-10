@@ -384,14 +384,9 @@ html += `
 
 <div class="card">
 
-    <div style="margin-top:6px; font-size:14px; color:#555;">
-    ${t.sector || '-'} <br>
-    ${t.ebrash || '-'} <br> <!-- 🔥 الجديد -->
-    ${t.church || '-'} <br>
-    الخادم: ${t.servant || '-'}
-  </div>
 
-  
+
+
   <div class="card-main">
     <div>${t.date}</div>
     <div class="${t.type === 'add' ? 'green':'red'}">
@@ -402,7 +397,12 @@ html += `
 
   <div>${t.note || ''}</div>
 
-
+    <div style="margin-top:6px; font-size:14px; color:#555;">
+    ${t.sector || '-'} <br>
+    ${t.ebrash || '-'} <br> <!-- 🔥 الجديد -->
+    ${t.church || '-'} <br>
+    الخادم: ${t.servant || '-'}
+  </div>
 
   <button  onclick="deleteTransaction('${id}')" 
     style="color: #a30000;background: none; padding: 0PX;width: 10%; padding: 0PX; margin-top:8px;">
