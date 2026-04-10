@@ -379,7 +379,14 @@ function saveTransaction() {
   }
 
   // ✅ تحقق
+  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
+
+    if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
+
+
   if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+
+
   if (isNaN(amount) || Number(amount) <= 0)
     return showError(amountEl, "المبلغ غير صحيح");
 
@@ -387,7 +394,6 @@ function saveTransaction() {
 
   if (!note) return showError(noteEl, "من فضلك اكتب ملاحظة");
 
-  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
   if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
@@ -398,6 +404,7 @@ function saveTransaction() {
   // ✅ تجهيز البيانات
   let dataToSave = {
     type,
+    ebrash,
     amount,
     date,
     note,
