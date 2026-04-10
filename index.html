@@ -646,6 +646,15 @@ function toggleFields() {
   } else {
     churchFields.style.display = "block";
   }
+
+  // التحكم في الإظهار
+  if (type.value === "add") {
+    churchFields.style.display = "none";
+    type.style.color = "green"; // 🟢 أخضر
+  } else {
+    churchFields.style.display = "block";
+    type.style.color = "red"; // 🔴 أحمر
+  }
 }
 
 
