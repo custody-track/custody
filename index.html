@@ -638,18 +638,17 @@ function hideLoading() {
 
 
 function toggleFields() {
-  const type = document.getElementById("type").value;
+  const type = document.getElementById("type");
   const churchFields = document.getElementById("churchFields");
 
-  if (type === "add") {
+  // التحكم في الإظهار
+  if (type.value === "add") {
     churchFields.style.display = "none";
     type.style.color = "green"; // 🟢 أخضر
   } else {
     churchFields.style.display = "block";
     type.style.color = "red"; // 🔴 أحمر
   }
-
-  
 }
 
 
