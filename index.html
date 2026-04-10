@@ -643,8 +643,10 @@ function toggleFields() {
 
   if (type === "add") {
     churchFields.style.display = "none";
+    type.style.color = "green"; // 🟢 أخضر
   } else {
     churchFields.style.display = "block";
+    type.style.color = "red"; // 🔴 أحمر
   }
 
   
