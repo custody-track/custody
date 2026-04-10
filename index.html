@@ -379,25 +379,20 @@ function saveTransaction() {
   }
 
   // ✅ تحقق
-  if (!amount) return 
+  if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
   if (isNaN(amount) || Number(amount) <= 0)
-    return 
+    return showError(amountEl, "المبلغ غير صحيح");
 
+  if (!date) return showError(dateEl, "من فضلك اختر التاريخ");
 
+  if (!note) return showError(noteEl, "من فضلك اكتب ملاحظة");
 
-  if (!ebrash) return 
-
-
-  if (!date) return 
-
-  if (!note) return 
-
-  if (!sector) return 
+  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
   if (type === "expense") {
-    if (!ebrash) return 
-    if (!church) return 
-    if (!servant) return 
+    if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
+    if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+    if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
   }
 
   // ✅ تجهيز البيانات
