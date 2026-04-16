@@ -330,9 +330,22 @@ function loginWithGoogle() {
   });
 }
 
+
+let isFirstLoad = true;
+
 auth.onAuthStateChanged(user => {
   const loader = document.getElementById("appLoading");
 
+  if (!isFirstLoad) {
+    // 🔥 لو الحالة اتغيرت → اعمل reload
+    location.reload();
+    return;
+  }
+
+  // أول مرة بس
+  isFirstLoad = false;
+
+  
   if (user) {
     currentEmpId = user.uid;
 
