@@ -148,6 +148,12 @@ select.selected {
 </head>
 <body>
 
+
+<div id="appLoading">
+  <div class="spinner"></div>
+</div>
+
+
 <DIv >
 
  <div class="top-bar">
@@ -155,7 +161,7 @@ select.selected {
   <button onclick="logout()">تسجيل خروج</button>
 </div>
 
-<div id="startBox" class="box">
+<div id="startBox" class="box" style="display:none;">
   <h2>مرحبًا</h2>
   <button onclick="loginWithGoogle()">تسجيل الدخول بجيميل</button>
 </div>
@@ -337,7 +343,11 @@ auth.onAuthStateChanged(user => {
     document.getElementById("startBox").style.display = "block";
     document.getElementById("panel").style.display = "none";
   }
+  loader.style.display = "none";
 });
+
+
+
 window.onload = function () {
 
     toggleFields();
