@@ -186,13 +186,11 @@ select.selected {
 </select>
 
 <div id="churchFields">
-  <select id="church" onchange="loadServants(); handleSelect(this)" class="placeholder">
+  <select id="church" onchange=" handleSelect(this)" class="placeholder">
     <option value="">اختر الكنيسة</option>
   </select>
 
-  <select id="servant" onchange="handleSelect(this)" class="placeholder">
-    <option value="">اختر الخادم</option>
-  </select>
+  
 </div>
 
   <input id="amount" type="number" placeholder="المبلغ">
@@ -379,7 +377,6 @@ function saveTransaction() {
   const sectorEl = document.getElementById("sector");
   const ebrashEl = document.getElementById("EBRASH");
   const churchEl = document.getElementById("church");
-  const servantEl = document.getElementById("servant");
 
   const amount = amountEl.value.trim();
   const date = dateEl.value;
@@ -388,7 +385,6 @@ function saveTransaction() {
   const sector = sectorEl.value;
   const ebrash = ebrashEl.value;
   const church = churchEl.value;
-  const servant = servantEl.value;
 
   const empName = document.getElementById("empName").innerText;
 
@@ -408,7 +404,6 @@ function saveTransaction() {
     if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
-    if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
   }
 
 
@@ -431,7 +426,6 @@ function saveTransaction() {
   if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
-    if (!servant) return showError(servantEl, "من فضلك اختر الخادم");
   }
 
   // ✅ تجهيز البيانات
@@ -449,7 +443,6 @@ function saveTransaction() {
   } else {
     dataToSave.ebrash = ebrash;
     dataToSave.church = church;
-    dataToSave.servant = servant;
   }
 
   // ✅ حفظ
@@ -518,8 +511,7 @@ ${
   t.type === "add"
     ? `المستلم: ${t.receiver || '-'}`
     : `
-    ${t.church || '-'} <br>
-    الخادم: ${t.servant || '-'}
+    ${t.church || '-'}
     `
 }
 
@@ -545,39 +537,15 @@ function logout() {
   });
 }
 
-function loadServants() {
-  const sector = document.getElementById("sector").value;
-  const ebrash = document.getElementById("EBRASH").value;
-  const church = document.getElementById("church").value;
-
-  const servantSelect = document.getElementById("servant");
-
-  // reset
-  servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
-
-  if (!sector || !ebrash || !church) return;
-
-  const servants = data[sector]?.ebrash[ebrash]?.churches[church]?.servants || [];
-
-  servants.forEach(name => {
-    const option = document.createElement("option");
-    option.value = name;
-    option.textContent = name;
-    servantSelect.appendChild(option);
-  });
-}
-
 
 function loadChurches() {
   const sector = document.getElementById("sector").value;
   const ebrash = document.getElementById("EBRASH").value;
 
   const churchSelect = document.getElementById("church");
-  const servantSelect = document.getElementById("servant");
 
   // reset
   churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
-  servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
 
   if (!sector || !ebrash) return;
 
@@ -596,12 +564,10 @@ function loadEbrash() {
   const sector = document.getElementById("sector").value;
   const ebrashSelect = document.getElementById("EBRASH");
   const churchSelect = document.getElementById("church");
-  const servantSelect = document.getElementById("servant");
 
   // reset
   ebrashSelect.innerHTML = '<option value="">اختر الأيبارشية</option>';
   churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
-  servantSelect.innerHTML = '<option value="">اختر الخادم</option>';
 
   if (!sector || !data[sector]) return;
 
