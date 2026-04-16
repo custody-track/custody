@@ -83,9 +83,10 @@ margin: 0PX;
 
 
 .top-bar {
-  display: flex;
+  display: block;
   justify-content: space-between; /* يوزعهم يمين وشمال */
   align-items: center;
+height: 10PX;
 
   background: #121586; 
   padding-right: 10px;
@@ -339,14 +340,14 @@ auth.onAuthStateChanged(user => {
 
     document.getElementById("startBox").style.display = "none";
     document.getElementById("panel").style.display = "block";
-      //  document.getElementById("LOOGOUT").style.display = "block";
+        document.getElementById("LOOGOUT").style.display = "block";
 
 
     loadTransactions();
   } else {
     document.getElementById("startBox").style.display = "block";
     document.getElementById("panel").style.display = "none";
-    //document.getElementById("LOOGOUT").style.display = "none";
+    document.getElementById("LOOGOUT").style.display = "none";
 
   }
 
