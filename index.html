@@ -489,53 +489,50 @@ function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
     .once("value", snap => {
 const data = snap.val() || {};
-      let html = "";
-      let total = 0;
+let html = "";
+let total = 0;
 
-      for (let id in data) {
-        const t = data[id];
-        total += t.type === "add" ? +t.amount : -t.amount;
+const entries = Object.entries(data).sort((a, b) => {
+  return new Date(b[1].date) - new Date(a[1].date);
+});
 
+entries.forEach(([id, t]) => {
+  total += t.type === "add" ? +t.amount : -t.amount;
 
-html += `
+  html += `
+  <div class="card">
 
-<div class="card">
-
-  <div class="card-main">
-    <div>${t.date}</div>
-    <div class="${t.type === 'add' ? 'green':'red'}">
-      ${t.type === 'add' ? 'إستلام عهدة':'مصروف'}
+    <div class="card-main">
+      <div>${t.date}</div>
+      <div class="${t.type === 'add' ? 'green':'red'}">
+        ${t.type === 'add' ? 'إستلام عهدة':'مصروف'}
+      </div>
+      <div>${t.amount} جنية </div>
     </div>
-    <div>${t.amount} جنية </div>
-  </div>
 
-  <div>${t.note || ''}</div>
+    <div>${t.note || ''}</div>
 
-  <div style="margin-top:6px; font-size:14px; color:#555;">
-    ${t.sector || '-'} <br>
+    <div style="margin-top:6px; font-size:14px; color:#555;">
+      ${t.sector || '-'} <br>
+      ${t.ebrash || '-'} <br>
+      ${t.place || '-'} <br>
 
-  ${t.ebrash || '-'} <br>
-  ${t.place || '-'} <br>
-
-  
-${
-  t.type === "add"
-    ? `المستلم: ${t.receiver || '-'}`
-    : `
-   ${t.church || '-'} <br>
-الخادم: ${t.servant || '-'}
-    `
-}
-
-  </div>
-
-  <button onclick="deleteTransaction('${id}')"
-    style="color: #a30000;background: none; width: 10%; margin-top:8px;">
-    حذف
-  </button>
-</div>`;
-
+      ${
+        t.type === "add"
+          ? `المستلم: ${t.receiver || '-'}`
+          : `
+          ${t.church || '-'} <br>
+          الخادم: ${t.servant || '-'}
+          `
       }
+    </div>
+
+    <button onclick="deleteTransaction('${id}')"
+      style="color: #a30000;background: none; width: 10%; margin-top:8px;">
+      حذف
+    </button>
+  </div>`;
+});
 
       document.getElementById("transactions").innerHTML = html;
       document.getElementById("balance").innerText = total;
