@@ -330,6 +330,8 @@ function loginWithGoogle() {
 }
 
 auth.onAuthStateChanged(user => {
+  const loader = document.getElementById("appLoading");
+
   if (user) {
     currentEmpId = user.uid;
 
@@ -343,6 +345,8 @@ auth.onAuthStateChanged(user => {
     document.getElementById("startBox").style.display = "block";
     document.getElementById("panel").style.display = "none";
   }
+
+  // 🔥 اخفاء اللودر بعد التحقق
   loader.style.display = "none";
 });
 
