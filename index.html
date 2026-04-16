@@ -516,14 +516,14 @@ html += `
 
   ${t.ebrash || '-'} <br>
   ${t.place || '-'} <br>
- الخادم:  ${t.servant || '-'} <br>
 
-
+  
 ${
   t.type === "add"
     ? `المستلم: ${t.receiver || '-'}`
     : `
-    ${t.church || '-'}
+   ${t.church || '-'} <br>
+الخادم: ${t.servant || '-'}
     `
 }
 
