@@ -195,6 +195,7 @@ select.selected {
 
   <input id="amount" type="number" placeholder="المبلغ">
   <input id="date" type="date">
+  <input id="place" type="text" placeholder="المكان">
   <textarea id="note" placeholder="ملاحظة"></textarea>
 
    <div id="loading" class="spinner-container" style="display: none;">
@@ -378,6 +379,9 @@ function saveTransaction() {
   const ebrashEl = document.getElementById("EBRASH");
   const churchEl = document.getElementById("church");
 
+  const placeEl = document.getElementById("place");
+const place = placeEl.value.trim();
+
   const amount = amountEl.value.trim();
   const date = dateEl.value;
   const note = noteEl.value.trim();
@@ -404,6 +408,7 @@ function saveTransaction() {
     if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+    if (!place) return showError(placeEl, "من فضلك أدخل المكان");
   }
 
 
@@ -413,6 +418,7 @@ function saveTransaction() {
 
 
   if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+  if (!place) return showError(placeEl, "من فضلك أدخل المكان");
 
 
   if (isNaN(amount) || Number(amount) <= 0)
@@ -435,6 +441,7 @@ function saveTransaction() {
     amount,
     date,
     note,
+     place,
     sector
   };
 
@@ -453,6 +460,7 @@ function saveTransaction() {
 
       amountEl.value = "";
       noteEl.value = "";
+      placeEl.value = "";
       dateEl.value = new Date().toISOString().split('T')[0];
 
       loadTransactions();
@@ -506,6 +514,7 @@ html += `
     ${t.sector || '-'} <br>
 
   ${t.ebrash || '-'} <br>
+  ${t.place || '-'} <br>
 
 ${
   t.type === "add"
