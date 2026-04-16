@@ -156,9 +156,9 @@ select.selected {
 
 <DIv >
 
- <div class="top-bar">
+ <div id="TOLBAAR" class="top-bar" style="display: none;">
   <h3 id="empName"></h3>
-  <button onclick="logout()">تسجيل خروج</button>
+  <button id="LOOGOUT" style="display: none;" onclick="logout()">تسجيل خروج</button>
 </div>
 
 <div id="startBox" class="box" style="display:none;">
@@ -339,6 +339,10 @@ auth.onAuthStateChanged(user => {
 
     document.getElementById("startBox").style.display = "none";
     document.getElementById("panel").style.display = "block";
+    document.getElementById("TOLBAAR").style.display = "block";
+
+
+    
 
     loadTransactions();
   } else {
