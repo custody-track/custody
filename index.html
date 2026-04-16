@@ -450,6 +450,7 @@ const place = placeEl.value.trim();
   } else {
     dataToSave.ebrash = ebrash;
     dataToSave.church = church;
+    dataToSave.servant = empName;
   }
 
   // ✅ حفظ
@@ -515,6 +516,8 @@ html += `
 
   ${t.ebrash || '-'} <br>
   ${t.place || '-'} <br>
+ الخادم:  ${t.servant || '-'} <br>
+
 
 ${
   t.type === "add"
