@@ -257,9 +257,10 @@ select.selected {
   <div id="transactions"></div>
 </div>
 
-<div class="balance-box">
+<div id="NEEDPAPER" class="balance-box">
   الأوراق المطلوب تسليمها: <span id="papers">0</span> جنية
 </div>
+
 <div id="settlements"></div>
 
 <div id="toast" style="
@@ -402,6 +403,9 @@ auth.onAuthStateChanged(user => {
     document.getElementById("panel").style.display = "block";
         document.getElementById("LOOGOUT").style.display = "block";
         topBar.classList.add("logged-in");
+        document.getElementById("NEEDPAPER").style.display = "block";
+
+        NEEDPAPER
 
 
     loadTransactions();
@@ -410,6 +414,8 @@ auth.onAuthStateChanged(user => {
     document.getElementById("panel").style.display = "none";
     document.getElementById("LOOGOUT").style.display = "none";
     topBar.classList.remove("logged-in");
+            document.getElementById("NEEDPAPER").style.display = "none";
+
 
   }
 
