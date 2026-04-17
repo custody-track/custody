@@ -255,21 +255,18 @@ select.selected {
 
 </div>
 
+  <div id="BBAR" class="balance-box" style="margin-bottom: 5PX;">الرصيد : <span id="balance">0</span> جنية </div>
 
 
 
 <div id="NEEDPAPER" class="balance-box" style="margin-top: 0PX;">
-    <div class="balance-box" style="margin-bottom: 5PX;">الرصيد : <span id="balance">0</span> جنية </div>
-
   الأوراق المطلوب تسليمها: <span id="papers">0</span> جنية
+</div>
 
-   <div style="display:flex; gap:10px; margin:10px; padding-bottom: 20PX;">
+ <div id="RBAR" style="display:flex; gap:10px; margin:10px; padding-bottom: 20PX;">
   <button style="font-size: 10PX;" onclick="showTransactions()">سجل المصروفات واستلام العهد</button>
   <button style="font-size: 10PX;" onclick="showSettlements()">سجل التسويات</button>
 </div>
-</div>
-
-
 
   <div id="transactions" style="display:none;"></div>
 <div id="settlements" style="display:none;" ></div>
@@ -415,6 +412,12 @@ auth.onAuthStateChanged(user => {
         document.getElementById("LOOGOUT").style.display = "block";
         topBar.classList.add("logged-in");
         document.getElementById("NEEDPAPER").style.display = "block";
+                document.getElementById("BBAR").style.display = "block";
+                                document.getElementById("RBAR").style.display = "block";
+
+
+
+        BBAR
 
         loadSettlements();
 
@@ -426,6 +429,8 @@ auth.onAuthStateChanged(user => {
     document.getElementById("LOOGOUT").style.display = "none";
     topBar.classList.remove("logged-in");
             document.getElementById("NEEDPAPER").style.display = "none";
+             document.getElementById("BBAR").style.display = "none";
+                                document.getElementById("RBAR").style.display = "none";
 
 
   }
