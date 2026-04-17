@@ -217,18 +217,18 @@ select.selected {
   </select>
 
 <select id="sector" onchange="loadEbrash()">
-  <option value="">اختر القطاع</option>
+  <option value="" disabled selected hidden>اختر القطاع</option>
   <option value="قطاع شرق الأسكندرية">قطاع شرق الأسكندرية</option>
 </select>
 
 
 <select id="EBRASH" onchange="loadChurches(); handleSelect(this)" class="placeholder">
-  <option value="">اختر الأيبارشية</option>
+  <option value="" disabled selected hidden>اختر الأيبارشية</option>
 </select>
 
 <div id="churchFields">
   <select id="church" onchange=" handleSelect(this)" class="placeholder">
-    <option value="">اختر الكنيسة</option>
+  <option value="" disabled selected hidden>اختر الكنيسة</option>
   </select>
 
   
@@ -636,7 +636,7 @@ function loadChurches() {
   const churchSelect = document.getElementById("church");
 
   // reset
-  churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
+  churchSelect.innerHTML = '<option value="" disabled selected hidden>اختر الكنيسة</option>';
 
   if (!sector || !ebrash) return;
 
@@ -657,8 +657,8 @@ function loadEbrash() {
   const churchSelect = document.getElementById("church");
 
   // reset
-  ebrashSelect.innerHTML = '<option value="">اختر الأيبارشية</option>';
-  churchSelect.innerHTML = '<option value="">اختر الكنيسة</option>';
+  ebrashSelect.innerHTML = '<option value="" disabled selected hidden>اختر الأيبارشية</option>';
+  churchSelect.innerHTML = '<option value=""disabled selected hidden>اختر الكنيسة</option>';
 
   if (!sector || !data[sector]) return;
 
