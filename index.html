@@ -88,7 +88,7 @@ margin: 0PX;
   align-items: center;
 height: 50PX;
 
-  background: #121586; 
+ /*  background: #121586; */ 
   padding-right: 10px;
   padding-top: 0px;
 padding-bottom: 0px0;
@@ -361,14 +361,7 @@ let isFirstLoad = true;
 auth.onAuthStateChanged(user => {
   const loader = document.getElementById("appLoading");
 
-
-  loader.style.opacity = "0";
-
-setTimeout(() => {
-  loader.style.display = "none";
-}, 300);
-
-
+  
   if (!isFirstLoad) {
     // 🔥 لو الحالة اتغيرت → اعمل reload
     location.reload();
