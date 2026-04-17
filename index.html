@@ -254,14 +254,22 @@ select.selected {
   <button id="saveBtn" onclick="saveTransaction()">حفظ</button>
 
   <div class="balance-box">الرصيد : <span id="balance">0</span> جنية </div>
-  <div id="transactions"></div>
+  
+  <div style="display:flex; gap:10px; margin:10px;">
+  <button onclick="showTransactions()">📊 العمليات</button>
+  <button onclick="showSettlements()">📁 التسويات</button>
+  <button onclick="openFilter()">🔍 فلترة</button>
 </div>
+
+  <div id="transactions" style="display:none;"></div>
+</div>
+
 
 <div id="NEEDPAPER" class="balance-box">
   الأوراق المطلوب تسليمها: <span id="papers">0</span> جنية
 </div>
 
-<div id="settlements"></div>
+<div id="settlements" style="display:none;"></div>
 
 <div id="toast" style="
   position:fixed;
@@ -872,7 +880,157 @@ function loadSettlements() {
     });
 }
 
+function showTransactions() {
+  document.getElementById("transactions").style.display = "block";
+  document.getElementById("settlements").style.display = "none";
+}
+
+function showSettlements() {
+  document.getElementById("transactions").style.display = "none";
+  document.getElementById("settlements").style.display = "block";
+}
+
+
+function openFilter() {
+  document.getElementById("filterModal").style.display = "flex";
+}
+
+function closeFilter() {
+  document.getElementById("filterModal").style.display = "none";
+}
+
+function applyFilter() {
+
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+  const church = document.getElementById("filterChurch").value;
+  const type = document.getElementById("filterType").value;
+
+  // 🔥 نحدد اي سجل ظاهر
+  const isTransactionsVisible =
+    document.getElementById("transactions").style.display === "block";
+
+  let path = isTransactionsVisible
+    ? "transactions"
+    : "settlements";
+
+  db.ref("employees/" + currentEmpId + "/" + path)
+    .once("value", snap => {
+
+      let data = snap.val() || {};
+
+      let entries = Object.entries(data);
+
+      // 🔥 نفس الترتيب
+      entries = entries.sort((a, b) => {
+        const d1 = a[1].date;
+        const d2 = b[1].date;
+
+        if (d1 !== d2) return new Date(d2) - new Date(d1);
+
+        return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
+      });
+
+      // 🔥 فلترة
+      entries = entries.filter(([id, t]) => {
+
+        if (from && t.date < from) return false;
+        if (to && t.date > to) return false;
+
+        if (church && t.church !== church) return false;
+
+        if (isTransactionsVisible) {
+          if (type === "expense" && t.type !== "expense") return false;
+          if (type === "add" && t.type !== "add") return false;
+        } else {
+          if (type === "papers" && t.settlementType !== "papers") return false;
+          if (type === "return" && t.settlementType !== "return") return false;
+        }
+
+        return true;
+      });
+
+      renderFiltered(entries, isTransactionsVisible);
+
+    });
+
+  closeFilter();
+}
+
+function renderFiltered(entries, isTransactions) {
+
+  let html = "";
+
+  entries.forEach(([id, t]) => {
+
+    if (isTransactions) {
+      html += `
+      <div class="card">
+        <div>${t.date}</div>
+        <div>${t.amount}</div>
+      </div>`;
+    } else {
+      html += `
+      <div class="card">
+        <div>${t.date}</div>
+        <div>${t.amount}</div>
+      </div>`;
+    }
+
+  });
+
+  if (isTransactions) {
+    document.getElementById("transactions").innerHTML = html;
+  } else {
+    document.getElementById("settlements").innerHTML = html;
+  }
+}
+
 </script>
+
+
+
+<div id="filterModal" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.4);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+
+  <div style="
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    width:90%;
+    max-width:400px;
+  ">
+
+    <h3>فلترة</h3>
+
+    <input type="date" id="fromDate">
+    <input type="date" id="toDate">
+
+    <select id="filterChurch">
+      <option value="">كل الكنائس</option>
+    </select>
+
+    <select id="filterType">
+      <option value="">الكل</option>
+      <option value="expense">مصروف</option>
+      <option value="add">استلام</option>
+      <option value="papers">تسليم أوراق</option>
+      <option value="return">توريد</option>
+    </select>
+
+    <button onclick="applyFilter()">تطبيق</button>
+    <button onclick="closeFilter()">إغلاق</button>
+
+  </div>
+</div>
 
 </body>
 </html>
