@@ -515,8 +515,9 @@ const settlementType = settlementTypeEl.value;
 
 
   if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+if (type !== "settlements") {
   if (!place) return showError(placeEl, "من فضلك أدخل المكان");
-
+}
 
   if (isNaN(amount) || Number(amount) <= 0)
     return showError(amountEl, "المبلغ غير صحيح");
@@ -596,10 +597,8 @@ function loadTransactions() {
       const data = snap.val() || {};
       let html = "";
       let total = 0;
-            let papersTotal = 0; // 🔥 هنا
+      let papersTotal = 0;
 
-
-      // 🔥 ترتيب (يوم + وقت)
       const entries = Object.entries(data).sort((a, b) => {
         const dateA = a[1].date;
         const dateB = b[1].date;
@@ -611,24 +610,19 @@ function loadTransactions() {
         return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
       });
 
+      // 🔥 لوب واحد لكل حاجة
       entries.forEach(([id, t]) => {
 
-        // ✅ حساب الرصيد الأساسي
+        // 💰 الرصيد
         if (t.type === "add") {
           total += +t.amount;
         } 
         else if (t.type === "expense") {
           total -= t.amount;
-          // 📄 الأوراق (مصروف)
-  papersTotal += +t.amount;
+          papersTotal += +t.amount; // 📄
         }
 
-        entries.forEach(([id, t]) => {
-  if (t.type === "expense") {
-    papersTotal += +t.amount;
-  }
-});
-
+        // 🎨 رسم الكارت
         html += `
         <div class="card">
 
@@ -666,10 +660,8 @@ function loadTransactions() {
 
       // ✅ عرض العمليات
       document.getElementById("transactions").innerHTML = html;
-            document.getElementById("papers").innerText = papersTotal;
 
-
-      // 🔥 نكمل الحساب من التسويات
+      // 🔥 حساب التسويات
       db.ref("employees/" + currentEmpId + "/settlements")
         .once("value", snap2 => {
 
@@ -678,18 +670,16 @@ function loadTransactions() {
           for (let id in settlements) {
             const s = settlements[id];
 
-            // 🔴 توريد باقي عهدة → يخصم من الرصيد
-          if (s.settlementType === "return") {
-  total -= +s.amount; // 💰 فلوس
-}
+            if (s.settlementType === "return") {
+              total -= +s.amount;
+            }
 
-if (s.settlementType === "papers") {
-  papersTotal -= +s.amount; // 📄 أوراق
-}
-
+            if (s.settlementType === "papers") {
+              papersTotal -= +s.amount;
+            }
           }
 
-          // ✅ عرض الرصيد النهائي
+          // ✅ عرض النتائج
           document.getElementById("balance").innerText = total;
           document.getElementById("papers").innerText = papersTotal;
         });
