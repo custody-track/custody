@@ -613,6 +613,8 @@ function loadTransactions() {
         } 
         else if (t.type === "expense") {
           total -= t.amount;
+          // 📄 الأوراق (مصروف)
+  papersTotal += +t.amount;
         }
 
         entries.forEach(([id, t]) => {
@@ -671,13 +673,19 @@ function loadTransactions() {
             const s = settlements[id];
 
             // 🔴 توريد باقي عهدة → يخصم من الرصيد
-            if (s.settlementType === "return") {
-              total -= +s.amount;
-            }
+          if (s.settlementType === "return") {
+  total -= +s.amount; // 💰 فلوس
+}
+
+if (s.settlementType === "papers") {
+  papersTotal -= +s.amount; // 📄 أوراق
+}
+
           }
 
           // ✅ عرض الرصيد النهائي
           document.getElementById("balance").innerText = total;
+          document.getElementById("papers").innerText = papersTotal;
         });
 
     });
