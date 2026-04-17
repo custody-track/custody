@@ -162,6 +162,9 @@ select.selected {
 
   overflow: hidden;
 }
+#appLoading {
+  transition: opacity 0.3s ease;
+}
 
   </style>
 </head>
@@ -357,6 +360,14 @@ let isFirstLoad = true;
 
 auth.onAuthStateChanged(user => {
   const loader = document.getElementById("appLoading");
+
+
+  loader.style.opacity = "0";
+
+setTimeout(() => {
+  loader.style.display = "none";
+}, 300);
+
 
   if (!isFirstLoad) {
     // 🔥 لو الحالة اتغيرت → اعمل reload
