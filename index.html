@@ -253,7 +253,7 @@ select.selected {
 
   <button id="saveBtn" onclick="saveTransaction()">حفظ</button>
 
-  <div class="balance-box">الرصيد : <span id="balance">0</span> جنية </div>
+  <div class="balance-box" style="margin-bottom: 5PX;">الرصيد : <span id="balance">0</span> جنية </div>
   
  
 
@@ -883,13 +883,27 @@ function loadSettlements() {
 
 
 function showTransactions() {
-  document.getElementById("transactions").style.display = "block";
+  const transactions = document.getElementById("transactions");
+
+  transactions.style.display = "block";
   document.getElementById("settlements").style.display = "none";
+
+  // 🔥 اسكرول ناعم لأول عنصر
+  setTimeout(() => {
+    transactions.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
 }
 
 function showSettlements() {
+  const settlements = document.getElementById("settlements");
+
+  settlements.style.display = "block";
   document.getElementById("transactions").style.display = "none";
-  document.getElementById("settlements").style.display = "block";
+
+  // 🔥 اسكرول ناعم لأول عنصر
+  setTimeout(() => {
+    settlements.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
 }
 
 </script>
