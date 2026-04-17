@@ -405,7 +405,7 @@ auth.onAuthStateChanged(user => {
         topBar.classList.add("logged-in");
         document.getElementById("NEEDPAPER").style.display = "block";
 
-        NEEDPAPER
+        loadSettlements();
 
 
     loadTransactions();
@@ -427,8 +427,7 @@ auth.onAuthStateChanged(user => {
 
 window.onload = function () {
 
-    toggleFields();
-    loadSettlements();
+   
 
 
 
