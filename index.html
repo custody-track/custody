@@ -101,6 +101,10 @@ padding-left: 10px;
   margin-left: -10PX;*/
 }
 
+.top-bar.logged-in {
+  background: #121586; /* اللون بعد تسجيل الدخول */
+}
+
 .top-bar h3 {
   margin: 0;
   margin-right: 20px;
@@ -165,6 +169,8 @@ select.selected {
 #appLoading {
   transition: opacity 0.3s ease;
 }
+
+
 
   </style>
 </head>
@@ -360,6 +366,7 @@ let isFirstLoad = true;
 
 auth.onAuthStateChanged(user => {
   const loader = document.getElementById("appLoading");
+  const topBar = document.getElementById("TOLBAAR");
 
   
   if (!isFirstLoad) {
@@ -380,6 +387,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("startBox").style.display = "none";
     document.getElementById("panel").style.display = "block";
         document.getElementById("LOOGOUT").style.display = "block";
+        topBar.classList.add("logged-in");
 
 
     loadTransactions();
@@ -387,6 +395,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("startBox").style.display = "block";
     document.getElementById("panel").style.display = "none";
     document.getElementById("LOOGOUT").style.display = "none";
+    topBar.classList.remove("logged-in");
 
   }
 
