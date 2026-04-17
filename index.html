@@ -255,16 +255,18 @@ select.selected {
 
   <div class="balance-box">الرصيد : <span id="balance">0</span> جنية </div>
   
-  <div style="display:flex; gap:10px; margin:10px;">
-  <button onclick="showTransactions()">سجل المصروفات واستلام العهد</button>
-  <button onclick="showSettlements()">سجل التسويات</button>
-</div>
+ 
 
 </div>
 
 
 <div id="NEEDPAPER" class="balance-box">
   الأوراق المطلوب تسليمها: <span id="papers">0</span> جنية
+</div>
+
+ <div style="display:flex; gap:10px; margin:10px;">
+  <button style="font-size: 10PX;" onclick="showTransactions()">سجل المصروفات واستلام العهد</button>
+  <button style="font-size: 10PX;" onclick="showSettlements()">سجل التسويات</button>
 </div>
 
   <div id="transactions" style="display:none;"></div>
