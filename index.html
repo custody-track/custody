@@ -214,7 +214,14 @@ select.selected {
 <select id="type" onchange="toggleFields()">
       <option value="expense">مصروف</option>
     <option value="add">إستلام عهدة</option>
+        <option value="settlements">تسويات</option>
   </select>
+
+  <select id="settlementType" style="display:none;">
+  <option value="" disabled selected hidden>اختر نوع التسوية</option>
+  <option value="papers">تسليم أوراق</option>
+  <option value="return">توريد باقي عهدة</option>
+</select>
 
 <select id="sector" onchange="loadEbrash()">
   <option value="" disabled selected hidden>اختر القطاع</option>
@@ -250,7 +257,10 @@ select.selected {
   <div id="transactions"></div>
 </div>
 
-
+<div class="balance-box">
+  الأوراق المطلوب تسليمها: <span id="papers">0</span> جنية
+</div>
+<div id="settlements"></div>
 
 <div id="toast" style="
   position:fixed;
@@ -453,6 +463,9 @@ function saveTransaction() {
   const placeEl = document.getElementById("place");
 const place = placeEl.value.trim();
 
+const settlementTypeEl = document.getElementById("settlementType");
+const settlementType = settlementTypeEl.value;
+
   const amount = amountEl.value.trim();
   const date = dateEl.value;
   const note = noteEl.value.trim();
@@ -475,10 +488,16 @@ const place = placeEl.value.trim();
 
   // ✅ تحقق
 
+  if (type === "settlements") {
+  if (!settlementType)
+    return showError(settlementTypeEl, "اختر نوع التسوية");
+}
+
 
     if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+      if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
     if (!place) return showError(placeEl, "من فضلك أدخل بنود الصرف ( النشاط )");
   }
 
@@ -508,6 +527,7 @@ const place = placeEl.value.trim();
   // ✅ تجهيز البيانات
   let dataToSave = {
     type,
+    settlementType, 
     ebrash,
     amount,
     date,
@@ -526,8 +546,12 @@ const place = placeEl.value.trim();
   }
 
   // ✅ حفظ
-  db.ref("employees/" + currentEmpId + "/transactions")
-    .push(dataToSave)
+let path = "employees/" + currentEmpId + "/transactions";
+
+if (type === "settlements") {
+  path = "employees/" + currentEmpId + "/settlements"; // 🔥 مسار جديد
+}   
+ db.ref(path).push(dataToSave)
     .then(() => {
       hideLoading();
 
@@ -560,67 +584,102 @@ document.querySelectorAll("input, select, textarea").forEach(el => {
 function loadTransactions() {
   db.ref("employees/" + currentEmpId + "/transactions")
     .once("value", snap => {
-const data = snap.val() || {};
-let html = "";
-let total = 0;
 
-const entries = Object.entries(data).sort((a, b) => {
+      const data = snap.val() || {};
+      let html = "";
+      let total = 0;
+            let papersTotal = 0; // 🔥 هنا
 
-  const dateA = a[1].date;
-  const dateB = b[1].date;
 
-  // 🟢 ترتيب حسب اليوم
-  if (dateA !== dateB) {
-    return new Date(dateB) - new Date(dateA);
+      // 🔥 ترتيب (يوم + وقت)
+      const entries = Object.entries(data).sort((a, b) => {
+        const dateA = a[1].date;
+        const dateB = b[1].date;
+
+        if (dateA !== dateB) {
+          return new Date(dateB) - new Date(dateA);
+        }
+
+        return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
+      });
+
+      entries.forEach(([id, t]) => {
+
+        // ✅ حساب الرصيد الأساسي
+        if (t.type === "add") {
+          total += +t.amount;
+        } 
+        else if (t.type === "expense") {
+          total -= t.amount;
+        }
+
+        entries.forEach(([id, t]) => {
+  if (t.type === "expense") {
+    papersTotal += +t.amount;
   }
-
-  // 🔴 نفس اليوم → حسب الوقت الحقيقي
-  return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
 });
 
-entries.forEach(([id, t]) => {
-  total += t.type === "add" ? +t.amount : -t.amount;
+        html += `
+        <div class="card">
 
-  html += `
-  <div class="card">
+          <div class="card-main">
+            <div>${t.date}</div>
+            <div class="${t.type === 'add' ? 'green':'red'}">
+              ${t.type === 'add' ? 'إستلام عهدة':'مصروف'}
+            </div>
+            <div>${t.amount} جنية </div>
+          </div>
 
-    <div class="card-main">
-      <div>${t.date}</div>
-      <div class="${t.type === 'add' ? 'green':'red'}">
-        ${t.type === 'add' ? 'إستلام عهدة':'مصروف'}
-      </div>
-      <div>${t.amount} جنية </div>
-    </div>
+          <div>${t.note || ''}</div>
 
-    <div>${t.note || ''}</div>
+          <div style="margin-top:6px; font-size:14px; color:#555;">
+            ${t.sector || '-'} <br>
+            ${t.ebrash || '-'} <br>
+            ${t.place || '-'} <br>
 
-    <div style="margin-top:6px; font-size:14px; color:#555;">
-      ${t.sector || '-'} <br>
-      ${t.ebrash || '-'} <br>
-      ${t.place || '-'} <br>
+            ${
+              t.type === "add"
+                ? `المستلم: ${t.receiver || '-'}`
+                : `
+                ${t.church || '-'} <br>
+                الخادم: ${t.servant || '-'}
+                `
+            }
+          </div>
 
-      ${
-        t.type === "add"
-          ? `المستلم: ${t.receiver || '-'}`
-          : `
-          ${t.church || '-'} <br>
-          الخادم: ${t.servant || '-'}
-          `
-      }
-    </div>
+          <button onclick="deleteTransaction('${id}')"
+            style="color: #a30000;background: none; width: 10%; margin-top:8px;">
+            حذف
+          </button>
+        </div>`;
+      });
 
-    <button onclick="deleteTransaction('${id}')"
-      style="color: #a30000;background: none; width: 10%; margin-top:8px;">
-      حذف
-    </button>
-  </div>`;
-});
-
+      // ✅ عرض العمليات
       document.getElementById("transactions").innerHTML = html;
-      document.getElementById("balance").innerText = total;
+            document.getElementById("papers").innerText = papersTotal;
+
+
+      // 🔥 نكمل الحساب من التسويات
+      db.ref("employees/" + currentEmpId + "/settlements")
+        .once("value", snap2 => {
+
+          const settlements = snap2.val() || {};
+
+          for (let id in settlements) {
+            const s = settlements[id];
+
+            // 🔴 توريد باقي عهدة → يخصم من الرصيد
+            if (s.settlementType === "return") {
+              total -= +s.amount;
+            }
+          }
+
+          // ✅ عرض الرصيد النهائي
+          document.getElementById("balance").innerText = total;
+        });
+
     });
 }
-
 
 function logout() {
   auth.signOut().then(() => {
@@ -708,22 +767,28 @@ function hideLoading() {
 function toggleFields() {
   const type = document.getElementById("type");
   const churchFields = document.getElementById("churchFields");
-    const placeInput = document.getElementById("place");
+  const placeInput = document.getElementById("place");
+  const settlementType = document.getElementById("settlementType");
 
-
-  // التحكم في الإظهار
   if (type.value === "add") {
     churchFields.style.display = "none";
-   type.style.color = "#ffffff";
-  type.style.background = "#008000";
-      placeInput.placeholder = "المكان"; // 🟢 استلام عهدة
+    settlementType.style.display = "none";
+    placeInput.style.display = "block";
 
-  } else {
+    placeInput.placeholder = "المكان";
+
+  } 
+  else if (type.value === "expense") {
     churchFields.style.display = "block";
-   type.style.color = "#ffffff";
-  type.style.background = "#dc3545";
-      placeInput.placeholder = "بنود الصرف ( النشاط )"; // 🔴 مصروف
+    settlementType.style.display = "none";
+    placeInput.style.display = "block";
 
+    placeInput.placeholder = "بنود الصرف ( النشاط )";
+  } 
+  else if (type.value === "settlements") {
+    churchFields.style.display = "none"; // ❌ الكنيسة
+    settlementType.style.display = "block"; // ✅ يظهر النوع
+    placeInput.style.display = "none"; // ❌ المكان
   }
 }
 
@@ -751,6 +816,45 @@ function handleSelect(el) {
     el.classList.remove("placeholder");
     el.classList.add("selected");
   }
+}
+
+
+function loadSettlements() {
+  db.ref("employees/" + currentEmpId + "/settlements")
+    .once("value", snap => {
+
+      const data = snap.val() || {};
+      let html = "";
+
+      const entries = Object.entries(data).sort((a, b) => {
+        return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
+      });
+
+      entries.forEach(([id, s]) => {
+
+        html += `
+        <div class="card">
+
+          <div class="card-main">
+            <div>${s.date}</div>
+            <div style="color:#0d6efd;">
+              ${s.settlementType === "papers" ? "تسليم أوراق" : "توريد باقي عهدة"}
+            </div>
+            <div>${s.amount} جنية</div>
+          </div>
+
+          <div>${s.note || ''}</div>
+
+          <div style="margin-top:6px; font-size:14px; color:#555;">
+            ${s.sector || '-'} <br>
+            ${s.ebrash || '-'}
+          </div>
+
+        </div>`;
+      });
+
+      document.getElementById("settlements").innerHTML = html;
+    });
 }
 
 </script>
