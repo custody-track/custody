@@ -422,6 +422,7 @@ auth.onAuthStateChanged(user => {
 window.onload = function () {
 
     toggleFields();
+    loadSettlements();
 
 
 
@@ -561,6 +562,7 @@ if (type === "settlements") {
       dateEl.value = new Date().toISOString().split('T')[0];
 
       loadTransactions();
+      loadSettlements();
       showToast("تم الحفظ بنجاح ✅", "green");
     })
     .catch((error) => {
