@@ -479,7 +479,7 @@ const place = placeEl.value.trim();
     if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
-    if (!place) return showError(placeEl, "من فضلك أدخل المكان");
+    if (!place) return showError(placeEl, "من فضلك أدخل بنود الصرف ( النشاط )");
   }
 
 
@@ -708,16 +708,22 @@ function hideLoading() {
 function toggleFields() {
   const type = document.getElementById("type");
   const churchFields = document.getElementById("churchFields");
+    const placeInput = document.getElementById("place");
+
 
   // التحكم في الإظهار
   if (type.value === "add") {
     churchFields.style.display = "none";
    type.style.color = "#ffffff";
   type.style.background = "#008000";
+      placeInput.placeholder = "المكان"; // 🟢 استلام عهدة
+
   } else {
     churchFields.style.display = "block";
    type.style.color = "#ffffff";
   type.style.background = "#dc3545";
+      placeInput.placeholder = "بنود الصرف ( النشاط )"; // 🔴 مصروف
+
   }
 }
 
