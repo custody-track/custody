@@ -345,7 +345,7 @@ auth.onAuthStateChanged(user => {
   // أول مرة بس
   isFirstLoad = false;
 
-  
+
   if (user) {
     currentEmpId = user.uid;
 
@@ -475,7 +475,7 @@ const place = placeEl.value.trim();
     note,
      place,
     sector,
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
   };
 
   if (type === "add") {
@@ -530,16 +530,13 @@ const entries = Object.entries(data).sort((a, b) => {
   const dateA = a[1].date;
   const dateB = b[1].date;
 
-  // 🟢 لو اليوم مختلف → ترتيب حسب اليوم
+  // 🟢 ترتيب حسب اليوم
   if (dateA !== dateB) {
     return new Date(dateB) - new Date(dateA);
   }
 
-  // 🔴 نفس اليوم → ترتيب حسب الوقت (timestamp)
-  const timeA = a[1].timestamp || 0;
-  const timeB = b[1].timestamp || 0;
-
-  return timeB - timeA;
+  // 🔴 نفس اليوم → حسب الوقت الحقيقي
+  return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
 });
 
 entries.forEach(([id, t]) => {
