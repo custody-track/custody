@@ -831,9 +831,18 @@ function loadSettlements() {
       const data = snap.val() || {};
       let html = "";
 
-      const entries = Object.entries(data).sort((a, b) => {
-        return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
-      });
+     const entries = Object.entries(data).sort((a, b) => {
+  const dateA = a[1].date;
+  const dateB = b[1].date;
+
+  // 🟢 ترتيب حسب اليوم
+  if (dateA !== dateB) {
+    return new Date(dateB) - new Date(dateA);
+  }
+
+  // 🔴 نفس اليوم → ترتيب حسب الوقت
+  return new Date(b[1].timestamp || 0) - new Date(a[1].timestamp || 0);
+});
 
       entries.forEach(([id, s]) => {
 
