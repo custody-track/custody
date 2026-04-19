@@ -240,14 +240,14 @@ select.selected {
   <option value="" disabled selected hidden>اختر الأيبارشية</option>
 </select>
 
+</div>
+
 
   <input id="activitiesCount" type="number" placeholder="عدد الأنشطة المسلمة">
 
   <input id="activitiesAmount" type="number" placeholder="إجمالي مبلغ الأنشطة">
 
   <textarea id="activitiesDetails" placeholder="اضغط لكتابة تفاصيل الأنشطة..." readonly></textarea>
-
-</div>
 
 <div id="churchFields">
   <select id="church" onchange=" handleSelect(this)" class="placeholder">
@@ -913,7 +913,7 @@ function loadSettlements() {
           <div style="margin-top:6px; font-size:14px; color:#555;">
             ${s.sector || '-'} <br>
             ${s.ebrash || '-'} <br>
-            الخادم: ${s.servant || '-'}
+            الخادم: ${s.servant || '-'}<br>
             ${s.activitiesCount ? `عدد الأنشطة: ${s.activitiesCount} <br>` : ''}
 ${s.activitiesAmount ? `إجمالي الأنشطة: ${s.activitiesAmount} <br>` : ''}
 ${s.activitiesDetails ? `<div style="margin-top:5px;">📄 ${s.activitiesDetails}</div>` : ''}
