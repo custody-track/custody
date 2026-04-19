@@ -1006,8 +1006,8 @@ function showSettlements() {
 }
 
 
-document.getElementById("settlementType").addEventListener("change", () => {
-  toggleFields();
+["type", "settlementType"].forEach(id => {
+  document.getElementById(id).addEventListener("change", toggleFields);
 });
 
 document.getElementById("activitiesDetails").addEventListener("click", () => {
