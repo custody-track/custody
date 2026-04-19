@@ -578,6 +578,9 @@ if (type === "settlements") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
       if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+      
+  if (isNaN(amount) || Number(amount) <= 0)
+    return showError(amountEl, "المبلغ غير صحيح");
     if (!place) return showError(placeEl, "من فضلك أدخل بنود الصرف ( النشاط )");
   }
 
@@ -589,8 +592,6 @@ if (type !== "settlements") {
   if (!place) return showError(placeEl, "من فضلك أدخل المكان");
 }
 
-  if (isNaN(amount) || Number(amount) <= 0)
-    return showError(amountEl, "المبلغ غير صحيح");
 
   if (!date) return showError(dateEl, "من فضلك اختر التاريخ");
 
@@ -604,6 +605,9 @@ if (type !== "settlements") {
   if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
   
   if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
+  
+  if (isNaN(amount) || Number(amount) <= 0)
+    return showError(amountEl, "المبلغ غير صحيح");
   }
 
 
