@@ -536,9 +536,37 @@ const settlementType = settlementTypeEl.value;
 
   // ✅ تحقق
 
-  if (type === "settlements") {
+if (type === "settlements") {
+
   if (!settlementType)
     return showError(settlementTypeEl, "اختر نوع التسوية");
+
+  // 🔥 تحقق إضافي لتسليم أوراق فقط
+  if (settlementType === "papers") {
+
+    const countEl = document.getElementById("activitiesCount");
+    const amountEl = document.getElementById("activitiesAmount");
+    const detailsEl = document.getElementById("activitiesDetails");
+
+    const count = countEl.value.trim();
+    const amountActivities = amountEl.value.trim();
+    const details = detailsEl.value.trim();
+
+    if (!count)
+      return showError(countEl, "أدخل عدد الأنشطة");
+
+    if (isNaN(count) || Number(count) <= 0)
+      return showError(countEl, "عدد الأنشطة غير صحيح");
+
+    if (!amountActivities)
+      return showError(amountEl, "أدخل إجمالي مبلغ الأنشطة");
+
+    if (isNaN(amountActivities) || Number(amountActivities) <= 0)
+      return showError(amountEl, "مبلغ الأنشطة غير صحيح");
+
+    if (!details)
+      return showError(detailsEl, "أدخل تفاصيل الأنشطة");
+  }
 }
 
 
