@@ -872,7 +872,7 @@ function toggleFields() {
     churchFields.style.display = "none";
     settlementType.style.display = "none";
     placeInput.style.display = "block";
-
+amount.style.display = "block";
     placeInput.placeholder = "المكان";
 
   } 
@@ -880,24 +880,27 @@ function toggleFields() {
     churchFields.style.display = "block";
     settlementType.style.display = "none";
     placeInput.style.display = "block";
-
+amount.style.display = "block";
     placeInput.placeholder = "بنود الصرف ( النشاط )";
   } 
   else if (type.value === "settlements") {
     churchFields.style.display = "none"; // ❌ الكنيسة
     settlementType.style.display = "block"; // ✅ يظهر النوع
     placeInput.style.display = "none"; // ❌ المكان
+    amount.style.display = "block";
 
       if (settlementType.value === "papers") {
     papersFields.style.display = "block";
     amount.style.display = "none";
   } else {
     papersFields.style.display = "none";
+        amount.style.display = "block";
+
+   
+  
   }
   
   }
-
- 
 }
 
 
