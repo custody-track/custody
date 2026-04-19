@@ -578,9 +578,7 @@ if (type === "settlements") {
   }
 
 
-  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
 
-    if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
 
 
   if (!amount) return showError(amountEl, "من فضلك أدخل المبلغ");
@@ -599,6 +597,8 @@ if (type !== "settlements") {
   if (type === "expense") {
     if (!ebrash) return showError(ebrashEl, "من فضلك اختر الإيبارشية");
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
+    
+  if (!sector) return showError(sectorEl, "من فضلك اختر القطاع");
   }
 
 
