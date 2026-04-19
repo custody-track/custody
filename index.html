@@ -170,7 +170,14 @@ select.selected {
   transition: opacity 0.3s ease;
 }
 
+#activitiesModal {
+  animation: fadeIn 0.2s ease;
+}
 
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
 
   </style>
 </head>
@@ -232,6 +239,15 @@ select.selected {
 <select id="EBRASH" onchange="loadChurches(); handleSelect(this)" class="placeholder">
   <option value="" disabled selected hidden>اختر الأيبارشية</option>
 </select>
+
+
+  <input id="activitiesCount" type="number" placeholder="عدد الأنشطة المسلمة">
+
+  <input id="activitiesAmount" type="number" placeholder="إجمالي مبلغ الأنشطة">
+
+  <textarea id="activitiesDetails" placeholder="اضغط لكتابة تفاصيل الأنشطة..." readonly></textarea>
+
+</div>
 
 <div id="churchFields">
   <select id="church" onchange=" handleSelect(this)" class="placeholder">
@@ -547,6 +563,10 @@ if (type !== "settlements") {
     if (!church) return showError(churchEl, "من فضلك اختر الكنيسة");
   }
 
+
+  const activitiesCount = document.getElementById("activitiesCount")?.value;
+const activitiesAmount = document.getElementById("activitiesAmount")?.value;
+const activitiesDetails = document.getElementById("activitiesDetails")?.value;
   // ✅ تجهيز البيانات
   let dataToSave = {
     type,
@@ -567,6 +587,12 @@ if (type !== "settlements") {
     dataToSave.church = church;
     dataToSave.servant = empName;
   }
+
+  if (type === "settlements" && settlementType === "papers") {
+  dataToSave.activitiesCount = activitiesCount;
+  dataToSave.activitiesAmount = activitiesAmount;
+  dataToSave.activitiesDetails = activitiesDetails;
+}
 
   // ✅ حفظ
 let path = "employees/" + currentEmpId + "/transactions";
@@ -791,6 +817,9 @@ function toggleFields() {
   const placeInput = document.getElementById("place");
   const settlementType = document.getElementById("settlementType");
 
+  const papersFields = document.getElementById("papersFields");
+
+
   if (type.value === "add") {
     churchFields.style.display = "none";
     settlementType.style.display = "none";
@@ -810,6 +839,12 @@ function toggleFields() {
     churchFields.style.display = "none"; // ❌ الكنيسة
     settlementType.style.display = "block"; // ✅ يظهر النوع
     placeInput.style.display = "none"; // ❌ المكان
+  }
+
+   if (settlementType.value === "papers") {
+    papersFields.style.display = "block";
+  } else {
+    papersFields.style.display = "none";
   }
 }
 
@@ -879,6 +914,9 @@ function loadSettlements() {
             ${s.sector || '-'} <br>
             ${s.ebrash || '-'} <br>
             الخادم: ${s.servant || '-'}
+            ${s.activitiesCount ? `عدد الأنشطة: ${s.activitiesCount} <br>` : ''}
+${s.activitiesAmount ? `إجمالي الأنشطة: ${s.activitiesAmount} <br>` : ''}
+${s.activitiesDetails ? `<div style="margin-top:5px;">📄 ${s.activitiesDetails}</div>` : ''}
           </div>
 
         </div>`;
@@ -913,7 +951,54 @@ function showSettlements() {
   }, 100);
 }
 
+
+document.getElementById("settlementType").addEventListener("change", () => {
+  toggleFields();
+});
+
+document.getElementById("activitiesDetails").addEventListener("click", () => {
+  document.getElementById("activitiesModal").style.display = "flex";
+});
+
+function saveActivitiesDetails() {
+  const val = document.getElementById("modalTextarea").value;
+  document.getElementById("activitiesDetails").value = val;
+  closeActivitiesModal();
+}
+
+function closeActivitiesModal() {
+  document.getElementById("activitiesModal").style.display = "none";
+}
+
 </script>
 
+
+<div id="activitiesModal" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.5);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+
+  <div style="
+    background:#fff;
+    width:90%;
+    max-width:500px;
+    padding:20px;
+    border-radius:12px;
+  ">
+    <h3>تفاصيل الأنشطة</h3>
+
+    <textarea id="modalTextarea" style="height:200px;"></textarea>
+
+    <button onclick="saveActivitiesDetails()">حفظ</button>
+    <button onclick="closeActivitiesModal()">إغلاق</button>
+  </div>
+
+</div>
 </body>
 </html>
