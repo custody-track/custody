@@ -968,9 +968,9 @@ function loadSettlements() {
             الخادم: ${s.servant || '-'}<br>
             ${s.activitiesCount ? `عدد الأنشطة: ${s.activitiesCount} <br>` : ''}
 ${s.activitiesAmount ? `إجمالي الأنشطة: ${s.activitiesAmount} <br>` : ''}
-${s.activitiesDetails ? `<div style="margin-top:5px;">📄 <div style="white-space: pre-line;">
-  ${s.activitiesDetails}
-</div></div>` : ''}
+${s.activitiesDetails 
+  ? `<div style="margin-top:5px; white-space: pre-wrap; max-height:150px; overflow:auto;">📄 ${s.activitiesDetails}</div>` 
+  : ''}
           </div>
 
         </div>`;
