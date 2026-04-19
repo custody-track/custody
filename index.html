@@ -863,6 +863,7 @@ function toggleFields() {
   const churchFields = document.getElementById("churchFields");
   const placeInput = document.getElementById("place");
   const settlementType = document.getElementById("settlementType");
+ const amount = document.getElementById("amount");
 
   const papersFields = document.getElementById("papersFields");
 
@@ -889,6 +890,7 @@ function toggleFields() {
 
       if (settlementType.value === "papers") {
     papersFields.style.display = "block";
+    amount.style.display = "none";
   } else {
     papersFields.style.display = "none";
   }
