@@ -839,13 +839,16 @@ function toggleFields() {
     churchFields.style.display = "none"; // ❌ الكنيسة
     settlementType.style.display = "block"; // ✅ يظهر النوع
     placeInput.style.display = "none"; // ❌ المكان
-  }
 
-   if (settlementType.value === "papers") {
+      if (settlementType.value === "papers") {
     papersFields.style.display = "block";
   } else {
     papersFields.style.display = "none";
   }
+  
+  }
+
+ 
 }
 
 
