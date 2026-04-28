@@ -257,8 +257,17 @@ select.selected {
 <div id="papersFields" style="display:none;">
 
   <div style="display:flex; gap:10px;">
-    <input id="activitiesCount" type="number" placeholder="عدد الأنشطة المسلمة" style="flex:1;">
-    <input id="activitiesAmount" type="number" placeholder="إجمالي مبلغ الأنشطة" style="flex:1;">
+<input id="activitiesCount"
+       type="number"
+       placeholder="عدد الأنشطة المسلمة"
+      style="flex:1; background:#f5f5f5; cursor:not-allowed;"
+       readonly>
+
+<input id="activitiesAmount"
+       type="number"
+       placeholder="إجمالي مبلغ الأنشطة"
+       style="flex:1; background:#f5f5f5; cursor:not-allowed;"
+       readonly>
   </div>
 
   <textarea id="activitiesDetails" placeholder="اضغط لكتابة تفاصيل الأنشطة..." readonly></textarea>
