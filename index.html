@@ -1192,31 +1192,40 @@ churches.forEach(church => {
     margin-bottom:15px;
     background:#f9f9f9;
   `;
+card.innerHTML = `
 
-  card.innerHTML = `
+<input type="text"
+       class="activity-name"
+       placeholder="اسم النشاط ${index}">
 
-    <input type="text"
-           class="activity-name"
-           placeholder="اسم النشاط ${index}">
+<select class="activity-church">
+  ${churchOptions}
+</select>
 
-    <select class="activity-church">
-      ${churchOptions}
-    </select>
+<div class="items"></div>
 
-    <div class="items"></div>
+<div class="activity-total"
+     style="
+     margin-top:8px;
+     background:#eef7ee;
+     padding:8px;
+     border-radius:8px;
+     font-weight:bold;">
+  إجمالي النشاط: 0 جنية
+</div>
 
-    <button type="button"
-      onclick="addItem(this)"
-      style="
-      background:#b9b9b9;
-      color:#fff;
-      border:none;
-      padding:10px;
-      border-radius:8px;
-      margin-top:8px;">
-      ➕ إضافة بند
-    </button>
-  `;
+<button type="button"
+onclick="addItem(this)"
+style="
+background:#b9b9b9;
+color:#fff;
+border:none;
+padding:10px;
+border-radius:8px;
+margin-top:8px;">
+➕ إضافة بند
+</button>
+`;
 
   container.appendChild(card);
 
@@ -1226,6 +1235,7 @@ churches.forEach(church => {
 
 // ✅ إضافة بند
 function addItem(btn) {
+
   const card = btn.parentElement;
   const items = card.querySelector(".items");
 
@@ -1235,13 +1245,25 @@ function addItem(btn) {
   row.style = "display:flex; gap:10px;";
 
   row.innerHTML = `
-    <input type="text" placeholder="بند ${count}" class="item-name" style="flex:2;">
-    <input type="number" placeholder="المبلغ" class="item-amount" style="flex:1;">
+    <input type="text"
+           placeholder="بند ${count}"
+           class="item-name"
+           style="flex:2;">
+
+    <input type="number"
+           placeholder="المبلغ"
+           class="item-amount"
+           style="flex:1;">
   `;
 
   items.appendChild(row);
-}
 
+  // تحديث تلقائي
+  row.querySelector(".item-amount")
+    .addEventListener("input", () => {
+      updateCardTotal(card);
+    });
+}
 
 function setType(value, btn) {
 
@@ -1278,7 +1300,10 @@ card.querySelector(".activity-name").value.trim() || `نشاط ${i+1}`;
 const church =
 card.querySelector(".activity-church").value || "بدون كنيسة";
 
-    output += activityName + " - " + church + "\n";
+let activityTotal = 0;
+
+output += activityName + " - " + church + "\n";
+
 
     const rows = card.querySelectorAll(".items > div");
 
@@ -1291,8 +1316,10 @@ card.querySelector(".activity-church").value || "بدون كنيسة";
         Number(row.querySelector(".item-amount").value || 0);
 
       total += amount;
+activityTotal += amount;
 
       output += `- ${item} : ${amount} جنية\n`;
+      output += `إجمالي النشاط: ${activityTotal} جنية\n\n`;
     });
 
     output += "\n";
@@ -1325,6 +1352,20 @@ function setSettlementType(value, btn){
   btn.classList.add("active");
 
   toggleFields();
+}
+
+function updateCardTotal(card) {
+
+  let total = 0;
+
+  card.querySelectorAll(".item-amount")
+    .forEach(input => {
+      total += Number(input.value || 0);
+    });
+
+  card.querySelector(".activity-total")
+    .innerText =
+      "إجمالي النشاط: " + total + " جنية";
 }
 
 
