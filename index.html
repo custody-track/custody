@@ -1151,21 +1151,24 @@ function addActivityCard() {
 
   const index = document.querySelectorAll(".activity-card").length + 1;
 
-  const sector = document.getElementById("sector").value;
-  const ebrash = document.getElementById("EBRASH").value;
+const churches = [
+  "كنيسة غربال",
+  "كنيسة كوبري الناموس",
+  "كنيسة دنا",
+  "كنيسة خورشيد",
+  "كنيسة الفلكي",
+  "كنيسة الخمسمائة"
+];
 
-  const churches =
-    data[sector]?.ebrash?.[ebrash]?.churches || {};
+let churchOptions = `<option value="">اختر الكنيسة</option>`;
 
-  let churchOptions =
-    `<option value="">اختر الكنيسة</option>`;
-
-  for (let churchName in churches) {
-    churchOptions += `
-      <option value="${churchName}">
-        ${churchName}
-      </option>`;
-  }
+churches.forEach(church => {
+  churchOptions += `
+    <option value="${church}">
+      ${church}
+    </option>
+  `;
+});
 
   const card = document.createElement("div");
   card.className = "activity-card";
