@@ -206,6 +206,22 @@ select.selected {
   opacity:.9;
 }
 
+.settle-btn{
+  flex:1;
+  background:#e9ecef;
+  color:#333;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.settle-btn.active{
+  background:#0d6efd;
+  color:#fff;
+}
+
   </style>
 </head>
 <body>
@@ -270,11 +286,34 @@ select.selected {
   </button>
 </div>
 
-  <select id="settlementType" style="display:none;">
-  <option value="" disabled selected hidden>اختر نوع التسوية</option>
+<!-- السليكت الأصلي مخفي -->
+<select id="settlementType"
+        style="display:none;"
+        onchange="toggleFields()">
+
+  <option value="">اختر نوع التسوية</option>
   <option value="papers">تسليم أوراق</option>
   <option value="return">توريد باقي عهدة</option>
 </select>
+
+<!-- الأزرار -->
+<div id="settlementButtons"
+     class="type-buttons"
+     style="display:none;">
+
+  <button type="button"
+          class="settle-btn"
+          onclick="setSettlementType('papers', this)">
+    تسليم أوراق
+  </button>
+
+  <button type="button"
+          class="settle-btn"
+          onclick="setSettlementType('return', this)">
+    توريد باقي عهدة
+  </button>
+
+</div>
 
 
 <select id="sector" onchange="loadEbrash()">
@@ -925,7 +964,7 @@ function toggleFields() {
 
   if (type.value === "add") {
     churchFields.style.display = "none";
-    settlementType.style.display = "none";
+document.getElementById("settlementButtons").style.display = "none";
     placeInput.style.display = "block";
 amount.style.display = "block";
 papersFields.style.display = "none";
@@ -934,7 +973,7 @@ papersFields.style.display = "none";
   } 
   else if (type.value === "expense") {
     churchFields.style.display = "block";
-    settlementType.style.display = "none";
+    document.getElementById("settlementButtons").style.display = "none";
     placeInput.style.display = "block";
 amount.style.display = "block";
 papersFields.style.display = "none";
@@ -942,7 +981,7 @@ papersFields.style.display = "none";
   } 
   else if (type.value === "settlements") {
     churchFields.style.display = "none"; // ❌ الكنيسة
-    settlementType.style.display = "block"; // ✅ يظهر النوع
+    document.getElementById("settlementButtons").style.display = "flex"; // ✅ يظهر النوع
     placeInput.style.display = "none"; // ❌ المكان
     amount.style.display = "block";
 
@@ -1222,6 +1261,22 @@ function saveActivitiesDetails() {
 // ✅ غلق
 function closeActivitiesModal() {
   document.getElementById("activitiesModal").style.display = "none";
+}
+
+
+
+function setSettlementType(value, btn){
+
+  const select = document.getElementById("settlementType");
+  select.value = value;
+
+  document.querySelectorAll(".settle-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+
+  toggleFields();
 }
 
 
