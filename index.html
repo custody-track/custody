@@ -179,6 +179,33 @@ select.selected {
   to { opacity: 1 }
 }
 
+.type-buttons{
+  display:flex;
+  gap:8px;
+  margin:8px 0;
+}
+
+.type-btn{
+  flex:1;
+  background:#e9ecef;
+  color:#333;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.type-btn.active{
+  background:#121586;
+  color:#fff;
+}
+
+.type-btn:hover{
+  opacity:.9;
+}
+
   </style>
 </head>
 <body>
@@ -218,11 +245,30 @@ select.selected {
            <H6 style="margin-top: 0PX;font-family: Arial;">(لو 16: 10)</H6>    
 </div>
 
-<select id="type" onchange="toggleFields()">
-      <option value="expense">مصروف</option>
-    <option value="add">إستلام عهدة</option>
-        <option value="settlements">تسويات</option>
-  </select>
+<!-- نخفي السليكت لكن نخليه موجود -->
+<select id="type" onchange="toggleFields()" style="display:none;">
+  <option value="expense">مصروف</option>
+  <option value="add">إستلام عهدة</option>
+  <option value="settlements">تسويات</option>
+</select>
+
+<!-- الأزرار -->
+<div class="type-buttons">
+  <button type="button" class="type-btn active"
+          onclick="setType('expense', this)">
+    مصروف
+  </button>
+
+  <button type="button" class="type-btn"
+          onclick="setType('add', this)">
+    إستلام عهدة
+  </button>
+
+  <button type="button" class="type-btn"
+          onclick="setType('settlements', this)">
+    تسويات
+  </button>
+</div>
 
   <select id="settlementType" style="display:none;">
   <option value="" disabled selected hidden>اختر نوع التسوية</option>
@@ -1112,6 +1158,24 @@ function addItem(btn) {
   items.appendChild(row);
 }
 
+
+function setType(value, btn) {
+
+  // تغيير قيمة السليكت الأصلي
+  const type = document.getElementById("type");
+  type.value = value;
+
+  // إزالة active من الكل
+  document.querySelectorAll(".type-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  // تفعيل الزر الحالي
+  btn.classList.add("active");
+
+  // تشغيل نفس الدالة القديمة
+  toggleFields();
+}
 
 // ✅ حفظ البيانات
 function saveActivitiesDetails() {
