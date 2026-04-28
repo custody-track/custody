@@ -1151,8 +1151,25 @@ function addActivityCard() {
 
   const index = document.querySelectorAll(".activity-card").length + 1;
 
+  const sector = document.getElementById("sector").value;
+  const ebrash = document.getElementById("EBRASH").value;
+
+  const churches =
+    data[sector]?.ebrash?.[ebrash]?.churches || {};
+
+  let churchOptions =
+    `<option value="">اختر الكنيسة</option>`;
+
+  for (let churchName in churches) {
+    churchOptions += `
+      <option value="${churchName}">
+        ${churchName}
+      </option>`;
+  }
+
   const card = document.createElement("div");
   card.className = "activity-card";
+
   card.style = `
     border:1px solid #ddd;
     padding:15px;
@@ -1162,17 +1179,28 @@ function addActivityCard() {
   `;
 
   card.innerHTML = `
-    <input type="text" class="activity-name" placeholder="اسم النشاط ${index}">
+
+    <input type="text"
+           class="activity-name"
+           placeholder="اسم النشاط ${index}">
+
+    <select class="activity-church">
+      ${churchOptions}
+    </select>
 
     <div class="items"></div>
 
-    <button type="button" onclick="addItem(this)" style="background:#b9b9b9;
-color:#fff;
-border:none;
-padding:10px;
-border-radius:8px;
-margin-top:8px;" >➕ إضافة بند</button>
-
+    <button type="button"
+      onclick="addItem(this)"
+      style="
+      background:#b9b9b9;
+      color:#fff;
+      border:none;
+      padding:10px;
+      border-radius:8px;
+      margin-top:8px;">
+      ➕ إضافة بند
+    </button>
   `;
 
   container.appendChild(card);
@@ -1230,9 +1258,12 @@ function saveActivitiesDetails() {
   cards.forEach((card, i) => {
 
     const activityName =
-      card.querySelector(".activity-name").value.trim() || `نشاط ${i+1}`;
+card.querySelector(".activity-name").value.trim() || `نشاط ${i+1}`;
 
-    output += activityName + "\n";
+const church =
+card.querySelector(".activity-church").value || "بدون كنيسة";
+
+    output += activityName + " - " + church + "\n";
 
     const rows = card.querySelectorAll(".items > div");
 
