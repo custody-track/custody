@@ -1319,10 +1319,10 @@ output += activityName + " - " + church + "\n";
 activityTotal += amount;
 
       output += `- ${item} : ${amount} جنية\n`;
-      output += `إجمالي النشاط: ${activityTotal} جنية\n\n`;
+      
     });
 
-    output += "\n";
+    output += `إجمالي النشاط: ${activityTotal} جنية\n\n`;
   });
 
   document.getElementById("activitiesDetails").value = output;
